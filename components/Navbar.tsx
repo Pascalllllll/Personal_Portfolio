@@ -29,13 +29,32 @@ export default function Navbar() {
     { label: t.contact, href: "#contact" },
   ];
 
+  const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
+    e.preventDefault(); 
+    
+    if (mobileOpen) setMobileOpen(false);
+
+    const targetElement = document.querySelector(href);
+    if (targetElement) {
+      const navHeight = 80; 
+      const elementPosition = targetElement.getBoundingClientRect().top;
+      const offsetPosition = elementPosition + window.scrollY - navHeight;
+
+      // Scroll mulus ke tujuan
+      window.scrollTo({
+        top: offsetPosition,
+        behavior: "smooth"
+      });
+    }
+  };
+
   return (
     <motion.header
       initial={{ y: -80, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
       transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
-        scrolled
+        scrolled || mobileOpen 
           ? "bg-white/80 dark:bg-[#04070f]/85 backdrop-blur-xl border-b border-slate-200/80 dark:border-white/[0.06] shadow-sm"
           : "bg-transparent"
       }`}
@@ -44,6 +63,7 @@ export default function Navbar() {
         {/* Logo */}
         <a
           href="#"
+          onClick={(e) => handleNavClick(e, "#hero")} 
           className="font-display font-bold text-lg tracking-tight text-slate-900 dark:text-white hover:opacity-80 transition-opacity"
         >
           <span className="accent">H</span>
@@ -57,6 +77,7 @@ export default function Navbar() {
             <a
               key={link.href}
               href={link.href}
+              onClick={(e) => handleNavClick(e, link.href)} 
               className="text-sm font-sans font-medium text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors duration-200 tracking-wide"
             >
               {link.label}
@@ -117,7 +138,7 @@ export default function Navbar() {
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: i * 0.06 }}
                   className="text-base font-sans font-medium text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors"
-                  onClick={() => setMobileOpen(false)}
+                  onClick={(e) => handleNavClick(e, link.href)} 
                 >
                   {link.label}
                 </motion.a>
