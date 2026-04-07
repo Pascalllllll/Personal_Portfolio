@@ -2,7 +2,7 @@
 
 import { useRef, useState } from "react";
 import { motion, useInView } from "framer-motion";
-import { Github, Linkedin, Mail, Send, CheckCircle } from "lucide-react";
+import { Github, Linkedin, Mail, Send, CheckCircle, AlertCircle } from "lucide-react";
 import { useLang } from "@/context/LanguageContext";
 import { content } from "@/lib/content";
 import { fadeInUp, slideInLeft, slideInRight } from "@/lib/animations";
@@ -13,16 +13,50 @@ export default function Contact() {
   const t = content[lang].contact;
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: "-100px" });
+  
   const [form, setForm] = useState({ name: "", email: "", message: "" });
-  const [status, setStatus] = useState<"idle" | "sending" | "success">("idle");
+  // Tambah state "error" untuk menangani kegagalan pengiriman
+  const [status, setStatus] = useState<"idle" | "sending" | "success" | "error">("idle");
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setStatus("sending");
-    await new Promise((r) => setTimeout(r, 1200));
-    setStatus("success");
-    setForm({ name: "", email: "", message: "" });
-    setTimeout(() => setStatus("idle"), 5000);
+
+    try {
+      const response = await fetch("https://api.web3forms.com/submit", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+        body: JSON.stringify({
+          // Menggunakan Access Key Web3Forms milikmu
+          access_key: "27207f0c-efea-437c-bc6a-93e44e2452f0",
+          name: form.name,
+          email: form.email,
+          message: form.message,
+          subject: `Portfolio Contact from: ${form.name}`,
+          from_name: "Hosea Felix Portfolio",
+        }),
+      });
+
+      const result = await response.json();
+
+      if (result.success) {
+        setStatus("success");
+        setForm({ name: "", email: "", message: "" });
+        // Kembali ke tampilan form setelah 5 detik
+        setTimeout(() => setStatus("idle"), 5000);
+      } else {
+        console.error("Web3Forms Error:", result);
+        setStatus("error");
+        setTimeout(() => setStatus("idle"), 5000);
+      }
+    } catch (error) {
+      console.error("Fetch Error:", error);
+      setStatus("error");
+      setTimeout(() => setStatus("idle"), 5000);
+    }
   };
 
   const socials = [
@@ -52,14 +86,12 @@ export default function Contact() {
   return (
     <section id="contact" className="section relative overflow-hidden" ref={ref}>
       
-      {/* --- Background Animasi Shadcn di sini --- */}
+      {/* Background Animasi Shadcn */}
       <div className="absolute inset-0 z-0 pointer-events-none">
         <FloatingPaths position={1} />
         <FloatingPaths position={-1} />
       </div>
-      {/* ----------------------------------------- */}
 
-      {/* Konten ditaruh di z-10 agar berada di atas background */}
       <div className="max-w-6xl mx-auto px-6 md:px-8 relative z-10">
         {/* Section label */}
         <motion.div
@@ -124,6 +156,7 @@ export default function Contact() {
             animate={isInView ? "visible" : "hidden"}
           >
             {status === "success" ? (
+              // Tampilan Sukses
               <motion.div
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
@@ -134,7 +167,23 @@ export default function Contact() {
                   {t.success}
                 </p>
               </motion.div>
+            ) : status === "error" ? (
+              // Tampilan Error (Gagal Kirim)
+              <motion.div
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                className="h-full flex flex-col items-center justify-center text-center p-10 rounded-2xl border border-red-200 dark:border-red-500/20 bg-red-50 dark:bg-red-500/[0.05]"
+              >
+                <AlertCircle size={36} className="text-red-500 mb-4" />
+                <p className="font-display font-600 text-slate-800 dark:text-slate-200 text-lg mb-2">
+                  {lang === "en" ? "Oops! Something went wrong." : "Waduh! Terjadi kesalahan."}
+                </p>
+                <p className="text-sm text-slate-500 dark:text-slate-400">
+                  {lang === "en" ? "Please try again later." : "Silakan coba lagi nanti."}
+                </p>
+              </motion.div>
             ) : (
+              // Tampilan Form Input
               <form onSubmit={handleSubmit} className="flex flex-col gap-4">
                 <div>
                   <input
@@ -144,6 +193,7 @@ export default function Contact() {
                     value={form.name}
                     onChange={(e) => setForm({ ...form, name: e.target.value })}
                     className={inputBase}
+                    disabled={status === "sending"}
                   />
                 </div>
                 <div>
@@ -154,6 +204,7 @@ export default function Contact() {
                     value={form.email}
                     onChange={(e) => setForm({ ...form, email: e.target.value })}
                     className={inputBase}
+                    disabled={status === "sending"}
                   />
                 </div>
                 <div>
@@ -164,6 +215,7 @@ export default function Contact() {
                     value={form.message}
                     onChange={(e) => setForm({ ...form, message: e.target.value })}
                     className={`${inputBase} resize-none`}
+                    disabled={status === "sending"}
                   />
                 </div>
 
