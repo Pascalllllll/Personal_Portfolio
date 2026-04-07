@@ -15,7 +15,6 @@ export default function Contact() {
   const isInView = useInView(ref, { once: true, margin: "-100px" });
   
   const [form, setForm] = useState({ name: "", email: "", message: "" });
-  // Tambah state "error" untuk menangani kegagalan pengiriman
   const [status, setStatus] = useState<"idle" | "sending" | "success" | "error">("idle");
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -30,7 +29,6 @@ export default function Contact() {
           Accept: "application/json",
         },
         body: JSON.stringify({
-          // Menggunakan Access Key Web3Forms milikmu
           access_key: "27207f0c-efea-437c-bc6a-93e44e2452f0",
           name: form.name,
           email: form.email,
@@ -45,7 +43,6 @@ export default function Contact() {
       if (result.success) {
         setStatus("success");
         setForm({ name: "", email: "", message: "" });
-        // Kembali ke tampilan form setelah 5 detik
         setTimeout(() => setStatus("idle"), 5000);
       } else {
         console.error("Web3Forms Error:", result);
@@ -156,7 +153,6 @@ export default function Contact() {
             animate={isInView ? "visible" : "hidden"}
           >
             {status === "success" ? (
-              // Tampilan Sukses
               <motion.div
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
@@ -168,7 +164,6 @@ export default function Contact() {
                 </p>
               </motion.div>
             ) : status === "error" ? (
-              // Tampilan Error (Gagal Kirim)
               <motion.div
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
