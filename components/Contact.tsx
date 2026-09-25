@@ -5,28 +5,9 @@ import { AlertCircle, Github, Linkedin, Mail } from "lucide-react";
 import { useLang } from "@/context/LanguageContext";
 import { content } from "@/lib/content";
 import SectionHeading from "@/components/SectionHeading";
+import { CONTACT_EMAIL, LIMITS, normalize, validate, type ErrorKey, type Field } from "@/lib/contact";
 
-const EMAIL = "hoseeee777@gmail.com";
-
-// Web3Forms keys are public by design (an alias for the inbox, not a secret), and its free
-// plan only accepts browser-side submissions, so the key lives in client code on purpose.
-const WEB3FORMS_ACCESS_KEY = "27207f0c-efea-437c-bc6a-93e44e2452f0";
-
-// Rejects "abc", "abc@", "@example.com" and "abc@." without refusing unusual but valid addresses.
-const EMAIL_PATTERN = /^[^\s@]+@[^\s@.]+(\.[^\s@.]+)+$/;
-
-type Field = "name" | "email" | "message";
-type ErrorKey = "errName" | "errEmailEmpty" | "errEmailInvalid" | "errMessage";
-
-function validate(form: Record<Field, string>) {
-  const errors: Partial<Record<Field, ErrorKey>> = {};
-  const email = form.email.trim();
-  if (!form.name.trim()) errors.name = "errName";
-  if (!email) errors.email = "errEmailEmpty";
-  else if (!EMAIL_PATTERN.test(email)) errors.email = "errEmailInvalid";
-  if (!form.message.trim()) errors.message = "errMessage";
-  return errors;
-}
+const EMAIL = CONTACT_EMAIL;
 
 const socials = [
   { icon: Github, label: "GitHub", href: "https://github.com/Pascalllllll", handle: "@Pascalllllll" },
@@ -56,14 +37,14 @@ export default function Contact() {
     const next = { ...form, [field]: value };
     setForm(next);
     // Once an error is showing, re-check as the visitor types so it clears as soon as it is fixed.
-    if (errors[field]) setErrors(validate(next));
+    if (errors[field]) setErrors(validate(normalize(next)));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (inFlight.current) return;
 
-    const found = validate(form);
+    const found = validate(normalize(form));
     setErrors(found);
     const first = (Object.keys(found) as Field[])[0];
     if (first) {
@@ -74,37 +55,27 @@ export default function Contact() {
     inFlight.current = true;
     setStatus("sending");
 
-    const name = form.name.trim();
     try {
-      const response = await fetch("https://api.web3forms.com/submit", {
+      const response = await fetch("/api/contact", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Accept: "application/json",
-        },
-        body: JSON.stringify({
-          access_key: WEB3FORMS_ACCESS_KEY,
-          name,
-          // Web3Forms sets Reply-To from this field, so replies go straight to the visitor.
-          email: form.email.trim(),
-          message: form.message.trim(),
-          subject: `Portfolio Contact from: ${name}`,
-          from_name: "Hosea Felix Portfolio",
-          botcheck,
-        }),
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ ...normalize(form), botcheck }),
       });
-
       const result = await response.json().catch(() => null);
 
-      if (response.ok && result?.success) {
+      if (response.ok && result?.ok) {
         setStatus("success");
         setForm({ name: "", email: "", message: "" });
+      } else if (response.status === 400 && result?.fields) {
+        // The server rejected a field the browser let through; show it on that field.
+        setErrors(result.fields);
+        setStatus("idle");
       } else {
-        console.error("Web3Forms Error:", response.status, result?.body?.message ?? result);
+        console.error("Contact form error:", response.status, result?.error);
         setStatus("error");
       }
     } catch (error) {
-      console.error("Fetch Error:", error);
+      console.error("Contact form network error:", error);
       setStatus("error");
     } finally {
       inFlight.current = false;
@@ -167,7 +138,7 @@ export default function Contact() {
               </div>
             ) : (
               <form onSubmit={handleSubmit} noValidate className="flex flex-col gap-5">
-                {/* Honeypot for bots; Web3Forms drops submissions where it is checked. */}
+                {/* Honeypot for bots; the server drops submissions where it is checked. */}
                 <input
                   type="checkbox"
                   name="botcheck"
@@ -185,6 +156,7 @@ export default function Contact() {
                   <input
                     id="contact-name"
                     name="name"
+                    maxLength={LIMITS.name}
                     type="text"
                     autoComplete="name"
                     placeholder={t.namePlaceholder}
@@ -204,6 +176,7 @@ export default function Contact() {
                   <input
                     id="contact-email"
                     name="email"
+                    maxLength={LIMITS.email}
                     type="email"
                     autoComplete="email"
                     placeholder={t.emailPlaceholder}
@@ -223,6 +196,7 @@ export default function Contact() {
                   <textarea
                     id="contact-message"
                     name="message"
+                    maxLength={LIMITS.message}
                     rows={5}
                     placeholder={t.messagePlaceholder}
                     value={form.message}

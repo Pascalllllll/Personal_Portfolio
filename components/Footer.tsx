@@ -12,12 +12,6 @@ export default function Footer() {
     <footer className="border-t border-line py-8">
       <div className="mx-auto flex max-w-4xl flex-col gap-2 px-4 text-sm text-faint sm:flex-row sm:items-center sm:justify-between sm:px-6">
         <p>
-          <span className="font-display font-bold text-ink">
-            HF<span className="stop" aria-hidden="true">.</span>
-          </span>{" "}
-          {t.tagline}
-        </p>
-        <p>
           © {year} Hosea Felix Sanjaya. {t.rights}
         </p>
       </div>

@@ -17,6 +17,7 @@
   --gold: #c8a64e;
   --tag-bg: #f5f5f5;
   --tag-ink: #404040;
+  --burst: var(--purple);
   color-scheme: light;
 }
 
@@ -34,6 +35,7 @@
   --gold: #d9c27a;
   --tag-bg: #262626;
   --tag-ink: #d4d4d4;
+  --burst: var(--gold);
   color-scheme: dark;
 }
 
@@ -106,7 +108,7 @@ body {
   position: absolute;
   height: 2px;
   border-radius: 1px;
-  background: var(--purple);
+  background: var(--burst);
   transform-origin: 0 50%;
 }
 

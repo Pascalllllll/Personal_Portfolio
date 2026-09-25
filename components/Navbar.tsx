@@ -2,9 +2,10 @@
 
 import { useState, useEffect } from "react";
 import { useTheme } from "next-themes";
-import { Moon, Sun, Menu, X } from "lucide-react";
+import { Home, Moon, Sun, Menu, X } from "lucide-react";
 import { useLang } from "@/context/LanguageContext";
 import { content } from "@/lib/content";
+import MusicPlayer from "@/components/MusicPlayer";
 
 const control =
   "inline-flex h-11 min-w-11 items-center justify-center gap-1.5 rounded-md border border-line-strong px-2.5 text-ink transition-colors duration-200 ease-out hover:border-ink";
@@ -59,10 +60,11 @@ export default function Navbar() {
       <nav className="mx-auto flex h-16 max-w-4xl items-center justify-between px-4 sm:px-6">
         <a
           href="#hero"
-          className="inline-flex h-11 min-w-11 items-center font-display text-lg font-bold tracking-tight text-ink"
+          className="inline-flex h-11 min-w-11 items-center text-ink"
+          aria-label={t.home}
           onClick={() => setMobileOpen(false)}
         >
-          HF<span className="stop" aria-hidden="true">.</span>
+          <Home size={20} strokeWidth={1.5} aria-hidden="true" />
         </a>
 
         <ul className="hidden items-center gap-1 md:flex">
@@ -79,6 +81,8 @@ export default function Navbar() {
         </ul>
 
         <div className="flex items-center gap-2">
+          <MusicPlayer className={control} />
+
           <button
             type="button"
             onClick={toggleLang}

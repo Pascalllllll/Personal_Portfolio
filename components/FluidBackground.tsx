@@ -15,10 +15,11 @@ const TIERS: Record<"desktop" | "tablet" | "mobile", Tier> = {
   mobile: { sim: 64, dye: 256, iterations: 8, interaction: 0, fps: 30 },
 };
 
-// Strongest tint the fluid may reach. Tertiary text still passes AA where purple and gold overlap.
+// One hue per theme: purple smoke in light mode, gold in dark. These are the strongest tints the
+// fluid may reach; tertiary text keeps AA over them (4.74:1 light, 4.52:1 dark).
 const THEMES = {
-  light: { paper: "#fafafa", a: "#ece7f7", b: "#f5efda" },
-  dark: { paper: "#0a0a0a", a: "#242034", b: "#24201a" },
+  light: { paper: "#fafafa", a: "#ece7f7", b: "#ece7f7", lift: 1 },
+  dark: { paper: "#0a0a0a", a: "#28231a", b: "#28231a", lift: 0.87 },
 };
 
 const hex = (h: string) => [1, 3, 5].map((i) => parseInt(h.slice(i, i + 2), 16) / 255);
@@ -193,8 +194,10 @@ void main() {
   display: `${HEADER}
 uniform sampler2D uDye;
 uniform vec3 paper, tintA, tintB;
+uniform float lift;
 void main() {
-  vec2 d = clamp(texture(uDye, vUv).rg, 0.0, 1.0);
+  // lift < 1 raises mid-tones so dim hues read as clearly as bright ones; the cap still bounds the result.
+  vec2 d = pow(clamp(texture(uDye, vUv).rg, 0.0, 1.0), vec2(lift));
   d = d * d * (3.0 - 2.0 * d);
   float s = d.x + d.y;
   if (s > 1.0) d /= s;
@@ -418,7 +421,7 @@ export default function FluidBackground() {
       gl.uniform1f(u.aspect, aspect);
       gl.uniform1f(u.time, time);
       gl.uniform1f(u.dt, dt);
-      gl.uniform1f(u.rate, 0.45);
+      gl.uniform1f(u.rate, 0.28);
       draw(u, dye.write, dye.read);
       dye.swap();
 
@@ -427,7 +430,7 @@ export default function FluidBackground() {
       bind(u.uSource, dye.read);
       gl.uniform2f(u.simTexel, 1 / velocity.read.w, 1 / velocity.read.h);
       gl.uniform1f(u.dt, dt);
-      gl.uniform1f(u.dissipation, 0.35);
+      gl.uniform1f(u.dissipation, 0.48);
       draw(u, dye.write, dye.read);
       dye.swap();
     };
@@ -442,6 +445,7 @@ export default function FluidBackground() {
       gl.uniform3fv(u.paper, hex(colors.paper));
       gl.uniform3fv(u.tintA, hex(colors.a));
       gl.uniform3fv(u.tintB, hex(colors.b));
+      gl.uniform1f(u.lift, colors.lift);
       draw(u, null, dye.read);
     };
 
@@ -490,7 +494,7 @@ export default function FluidBackground() {
         const y = 1 - ev.y / h;
         if (ev.click) {
           splat(velocity, x, y, [tier.sim * 0.6 * tier.interaction, 0, 0], 0.0012, true);
-          splat(dye, x, y, [0, 0.12, 0], 0.0009);
+          splat(dye, x, y, [0, 0.1, 0], 0.0009);
           continue;
         }
         // Faster pointer: faster local flow, wider reach, and a stronger wake per pixel travelled.

@@ -27,8 +27,8 @@ const jetbrainsMono = JetBrains_Mono({
 export const metadata: Metadata = {
   title: "Hosea Felix Sanjaya | Portfolio",
   description:
-    "Portfolio of Hosea Felix Sanjaya, Informatics Engineering student at ITS Surabaya working on software engineering, computer networking, and data analysis.",
-  keywords: ["software engineer", "ITS", "data", "networking", "portfolio"],
+    "Portfolio of Hosea Felix Sanjaya, Informatics Engineering student at ITS Surabaya working on data analysis, databases, and a heavily themed Debian desktop.",
+  keywords: ["data analysis", "ITS", "data", "Debian", "Linux ricing", "portfolio"],
 };
 
 export default function RootLayout({
