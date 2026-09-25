@@ -12,7 +12,7 @@ export default function SectionHeading({
   children?: ReactNode;
 }) {
   return (
-    <div className="mb-10 md:mb-12">
+    <div data-reveal className="mb-10 md:mb-12">
       <p className="mb-2 text-sm text-faint">{label}</p>
       <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
         <h2

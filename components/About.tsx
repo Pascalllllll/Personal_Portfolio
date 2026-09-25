@@ -17,13 +17,13 @@ export default function About() {
         <SectionHeading id="about-title" label={t.label} title={t.title} />
 
         <div className="grid gap-10 md:grid-cols-[minmax(0,3fr)_minmax(0,2fr)] md:gap-14">
-          <div className="space-y-4 text-muted">
+          <div data-reveal className="space-y-4 text-muted">
             <p>{t.p1}</p>
             <p>{t.p2}</p>
             <p>{t.p3}</p>
           </div>
 
-          <aside className="flex flex-col gap-6">
+          <aside data-reveal style={{ "--reveal-delay": "120ms" } as React.CSSProperties} className="flex flex-col gap-6">
             <div className="flex items-center gap-4">
               <div className="relative h-20 w-20 flex-shrink-0 overflow-hidden rounded-lg">
                 <Image src="/foto-profil.jpg" alt={t.photoAlt} fill sizes="80px" className="object-cover" />
@@ -45,18 +45,22 @@ export default function About() {
               {t.facts.map((fact) => (
                 <div key={fact.label} className="grid grid-cols-[6.5rem_1fr] gap-3 py-3">
                   <dt className="text-faint">{fact.label}</dt>
-                  <dd className="font-medium text-ink">{fact.value}</dd>
+                  <dd className="font-medium text-ink">
+                    {fact.value}
+                    {"note" in fact && <span className="ml-1.5 text-xs font-normal text-faint opacity-40">{fact.note}</span>}
+                  </dd>
                 </div>
               ))}
             </dl>
           </aside>
         </div>
 
-        <h3 className="mt-14 font-display text-xl font-medium text-ink">{focus.title}</h3>
+        <h3 data-reveal className="mt-14 font-display text-xl font-medium text-ink">{focus.title}</h3>
         <ul className="mt-4 border-t border-line">
           {focus.items.map((item) => (
             <li
               key={item.title}
+              data-reveal
               className="grid gap-2 border-b border-line py-5 md:grid-cols-[minmax(0,1fr)_minmax(0,2fr)] md:gap-8"
             >
               <h4 className="font-semibold text-ink">{item.title}</h4>
@@ -68,14 +72,16 @@ export default function About() {
           ))}
         </ul>
 
-        <h3 className="mt-10 text-sm text-faint">{t.skillsLabel}</h3>
-        <ul className="mt-3 flex flex-wrap gap-1.5">
-          {t.skills.map((skill) => (
-            <li key={skill} className="tag">
-              {skill}
-            </li>
-          ))}
-        </ul>
+        <div data-reveal>
+          <h3 className="mt-10 text-sm text-faint">{t.skillsLabel}</h3>
+          <ul className="mt-3 flex flex-wrap gap-1.5">
+            {t.skills.map((skill) => (
+              <li key={skill} className="tag">
+                {skill}
+              </li>
+            ))}
+          </ul>
+        </div>
       </div>
     </section>
   );

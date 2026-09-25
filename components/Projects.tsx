@@ -28,7 +28,7 @@ export default function Projects() {
 
         <ul className="flex flex-col gap-4">
           {t.items.map((project) => (
-            <li key={project.title}>
+            <li key={project.title} data-reveal>
               <article className="group relative rounded-lg border border-line bg-raised p-5 transition-colors duration-200 ease-out hover:border-line-strong md:p-6">
                 <div className="flex items-baseline justify-between gap-4">
                   <h3 className="font-display text-xl font-medium text-ink">

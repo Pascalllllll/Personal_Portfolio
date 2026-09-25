@@ -29,6 +29,12 @@ const config: Config = {
           "soft-hover": "var(--purple-soft-hover)",
         },
         gold: "var(--gold)",
+        accent: {
+          DEFAULT: "var(--accent)",
+          soft: "var(--accent-soft)",
+          "soft-hover": "var(--accent-soft-hover)",
+          border: "var(--accent-border)",
+        },
         tag: {
           DEFAULT: "var(--tag-bg)",
           ink: "var(--tag-ink)",

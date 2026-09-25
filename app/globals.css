@@ -18,6 +18,12 @@
   --tag-bg: #f5f5f5;
   --tag-ink: #404040;
   --burst: var(--purple);
+  /* Buttons and link underlines: purple in light mode, gold in dark. */
+  --accent: var(--purple);
+  --accent-soft: var(--purple-soft);
+  --accent-soft-hover: var(--purple-soft-hover);
+  --accent-border: var(--purple);
+  --selection: var(--purple-soft-hover);
   color-scheme: light;
 }
 
@@ -25,7 +31,8 @@
   --paper: #0a0a0a;
   --raised: #121212;
   --line: #262626;
-  --line-strong: #737373;
+  /* Softened for dark mode; input borders keep 3.3:1 against raised surfaces. */
+  --line-strong: #666666;
   --ink: #f5f5f5;
   --muted: #a3a3a3;
   --faint: #8a8a8a;
@@ -36,6 +43,12 @@
   --tag-bg: #262626;
   --tag-ink: #d4d4d4;
   --burst: var(--gold);
+  --accent: var(--gold);
+  --accent-soft: #2e2716;
+  --accent-soft-hover: #3b321c;
+  /* Gold mixed halfway into the background: softer outline, still 3.5:1 against it. */
+  --accent-border: #726642;
+  --selection: #4a3f22;
   color-scheme: dark;
 }
 
@@ -53,7 +66,7 @@ body {
 }
 
 ::selection {
-  background: var(--purple-soft-hover);
+  background: var(--selection);
   color: var(--ink);
 }
 
@@ -67,29 +80,29 @@ body {
   @apply py-16 md:py-24;
 }
 
-/* Gold full stop after headings. Decorative only, so it is hidden from screen readers. */
+/* Accent full stop after headings. Decorative only, so it is hidden from screen readers. */
 .stop {
-  color: var(--gold);
+  color: var(--accent);
 }
 
 .btn-primary {
-  @apply inline-flex min-h-11 items-center justify-center gap-2 rounded-md border border-purple bg-purple-soft px-5 text-sm font-semibold text-ink transition-colors duration-200 ease-out;
+  @apply inline-flex min-h-11 items-center justify-center gap-2 rounded-md border border-accent-border bg-accent-soft px-5 text-sm font-semibold text-ink transition-colors duration-200 ease-out;
 }
 .btn-primary:hover {
-  @apply bg-purple-soft-hover;
+  @apply bg-accent-soft-hover;
 }
 
 .btn-outline {
-  @apply inline-flex min-h-11 items-center justify-center gap-2 rounded-md border border-line-strong px-5 text-sm font-semibold text-ink transition-colors duration-200 ease-out;
+  @apply inline-flex min-h-11 items-center justify-center gap-2 rounded-md border border-accent-border px-5 text-sm font-semibold text-ink transition-colors duration-200 ease-out;
 }
 .btn-outline:hover {
-  @apply border-ink;
+  @apply bg-accent-soft;
 }
 
-/* Text links: ink text, soft gold underline that thickens on hover. */
+/* Text links: ink text, accent underline that thickens on hover. */
 .link {
   text-decoration-line: underline;
-  text-decoration-color: var(--gold);
+  text-decoration-color: var(--accent);
   text-decoration-thickness: 1px;
   text-underline-offset: 4px;
   transition: text-decoration-thickness 200ms ease-out;
@@ -101,6 +114,47 @@ body {
 
 .tag {
   @apply rounded bg-tag px-2 py-0.5 font-mono text-xs text-tag-ink;
+}
+
+/* Typing caret in the hero heading. */
+.caret {
+  display: inline-block;
+  width: 0.06em;
+  height: 0.9em;
+  margin-left: 0.06em;
+  vertical-align: -0.05em;
+  background: var(--accent);
+  animation: caret-blink 1s steps(1) infinite;
+}
+@keyframes caret-blink {
+  50% {
+    opacity: 0;
+  }
+}
+
+/* Scroll reveal: see components/ScrollReveal.tsx. Only active once html.reveal is set. */
+.reveal [data-reveal] {
+  opacity: 0;
+  transform: translateY(28px);
+  transition:
+    opacity 700ms cubic-bezier(0.22, 1, 0.36, 1),
+    transform 700ms cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: opacity, transform;
+}
+.reveal [data-reveal][data-side="above"] {
+  transform: translateY(-28px);
+}
+.reveal [data-reveal][data-shown] {
+  opacity: 1;
+  transform: none;
+  transition-delay: var(--reveal-delay, 0ms);
+}
+
+/* Theme switch: the default view-transition cross-fade is replaced by the circle animation in Navbar. */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
 }
 
 /* Click burst bar: thin, pivoting on its left end so rotation starts at the click point. */

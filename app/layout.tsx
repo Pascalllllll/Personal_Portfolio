@@ -42,6 +42,14 @@ export default function RootLayout({
       suppressHydrationWarning
       className={`${playfair.variable} ${jakarta.variable} ${jetbrainsMono.variable}`}
     >
+      <head>
+        {/* Hide reveal targets before first paint, so they fade in rather than flash. Skipped for reduced motion. */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `if(!matchMedia("(prefers-reduced-motion: reduce)").matches)document.documentElement.classList.add("reveal")`,
+          }}
+        />
+      </head>
       <body>
         <Providers>{children}</Providers>
       </body>

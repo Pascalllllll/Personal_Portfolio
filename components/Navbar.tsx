@@ -1,6 +1,7 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, type MouseEvent } from "react";
+import { flushSync } from "react-dom";
 import { useTheme } from "next-themes";
 import { Home, Moon, Sun, Menu, X } from "lucide-react";
 import { useLang } from "@/context/LanguageContext";
@@ -8,7 +9,7 @@ import { content } from "@/lib/content";
 import MusicPlayer from "@/components/MusicPlayer";
 
 const control =
-  "inline-flex h-11 min-w-11 items-center justify-center gap-1.5 rounded-md border border-line-strong px-2.5 text-ink transition-colors duration-200 ease-out hover:border-ink";
+  "inline-flex h-11 min-w-11 items-center justify-center gap-1.5 rounded-md border border-accent-border px-2.5 text-ink transition-colors duration-200 ease-out hover:bg-accent-soft";
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
@@ -36,11 +37,41 @@ export default function Navbar() {
   const navLinks = [
     { label: t.projects, href: "#projects" },
     { label: t.about, href: "#about" },
+    { label: t.experience, href: "#experience" },
     { label: t.contact, href: "#contact" },
   ];
 
   // The server can't know the theme, so treat it as unknown until mount or the aria-label won't hydrate.
   const isDark = mounted && resolvedTheme === "dark";
+
+  // The new theme grows as a circle out of the toggle. Browsers without view transitions, and visitors
+  // who prefer reduced motion, get an instant switch.
+  const switchTheme = (e: MouseEvent<HTMLButtonElement>) => {
+    const next = isDark ? "light" : "dark";
+    if (!document.startViewTransition || window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      setTheme(next);
+      return;
+    }
+
+    const rect = e.currentTarget.getBoundingClientRect();
+    const x = rect.left + rect.width / 2;
+    const y = rect.top + rect.height / 2;
+    const radius = Math.hypot(Math.max(x, window.innerWidth - x), Math.max(y, window.innerHeight - y));
+
+    const transition = document.startViewTransition(() => {
+      // The snapshot of the new state is taken when this returns, so the class has to be on <html> by then.
+      flushSync(() => setTheme(next));
+      document.documentElement.classList.toggle("dark", next === "dark");
+      document.documentElement.style.colorScheme = next;
+    });
+
+    transition.ready.then(() => {
+      document.documentElement.animate(
+        { clipPath: [`circle(0px at ${x}px ${y}px)`, `circle(${radius}px at ${x}px ${y}px)`] },
+        { duration: 650, easing: "cubic-bezier(0.22, 1, 0.36, 1)", pseudoElement: "::view-transition-new(root)" },
+      );
+    });
+  };
 
   return (
     <header
@@ -94,7 +125,7 @@ export default function Navbar() {
 
           <button
             type="button"
-            onClick={() => setTheme(isDark ? "light" : "dark")}
+            onClick={switchTheme}
             className={control}
             aria-label={isDark ? t.toLight : t.toDark}
           >

@@ -90,7 +90,7 @@ export default function Contact() {
         <SectionHeading id="contact-title" label={t.label} title={t.title} />
 
         <div className="grid gap-12 md:grid-cols-[minmax(0,2fr)_minmax(0,3fr)] md:gap-14">
-          <div>
+          <div data-reveal>
             <p className="text-muted">{t.subtitle}</p>
 
             <h3 className="mb-2 mt-10 text-sm font-medium text-faint">{t.orReach}</h3>
@@ -114,7 +114,7 @@ export default function Contact() {
             </ul>
           </div>
 
-          <div aria-live="polite">
+          <div data-reveal style={{ "--reveal-delay": "120ms" } as React.CSSProperties} aria-live="polite">
             {status === "success" ? (
               <div className="rounded-lg border border-line bg-raised p-6 md:p-8">
                 <p className="font-display text-xl font-medium text-ink">{t.success}</p>

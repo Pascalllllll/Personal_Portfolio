@@ -4,6 +4,7 @@ export const content = {
   en: {
     nav: {
       about: "About",
+      experience: "Experience",
       projects: "Projects",
       contact: "Contact",
       skip: "Skip to content",
@@ -18,6 +19,7 @@ export const content = {
     },
     hero: {
       name: "Hosea Felix Sanjaya",
+      typing: ["Part-time gamer.", "I use Debian :v", "Unemployee.."],
       role: "Informatics Engineering student at ITS Surabaya.",
       description:
         "I turn raw data into something people can act on, then spend the evening theming my desktop. I use Debian, btw.",
@@ -34,7 +36,7 @@ export const content = {
         { label: "Studying", value: "Informatics Engineering, ITS" },
         { label: "Role", value: "Head of Event, HMTC" },
         { label: "Based in", value: "Surabaya, Indonesia" },
-        { label: "GPA", value: "3.77" },
+        { label: "GPA", value: "3.77", note: "(4.00 on last semester :v)" },
       ],
       skillsLabel: "Technologies",
       skills: ["Python", "pandas", "PostgreSQL", "MySQL", "TypeScript", "Next.js", "Git", "Debian", "GNOME", "fish", "Starship"],
@@ -117,6 +119,16 @@ export const content = {
         },
       ],
     },
+    experience: {
+      label: "Experience",
+      title: "Where I've been involved",
+      present: "Present",
+      roles: "roles",
+      yr: "yr",
+      yrs: "yrs",
+      mo: "mo",
+      mos: "mos",
+    },
     contact: {
       label: "Contact",
       title: "Write to me",
@@ -149,6 +161,7 @@ export const content = {
   id: {
     nav: {
       about: "Tentang",
+      experience: "Pengalaman",
       projects: "Proyek",
       contact: "Kontak",
       skip: "Langsung ke konten",
@@ -163,6 +176,7 @@ export const content = {
     },
     hero: {
       name: "Hosea Felix Sanjaya",
+      typing: ["Part-time gamer.", "I use Debian :v", "Unemployee.."],
       role: "Mahasiswa Teknik Informatika di ITS Surabaya.",
       description:
         "Saya mengolah data mentah menjadi sesuatu yang bisa dipakai untuk mengambil keputusan, lalu menghabiskan malam mengutak-atik tampilan desktop. I use Debian, btw.",
@@ -179,7 +193,7 @@ export const content = {
         { label: "Kuliah", value: "Teknik Informatika, ITS" },
         { label: "Peran", value: "Kepala Biro Event, HMTC" },
         { label: "Domisili", value: "Surabaya, Indonesia" },
-        { label: "IPK", value: "3.77" },
+        { label: "IPK", value: "3.77", note: "(4.00 di semester lalu :v)" },
       ],
       skillsLabel: "Teknologi",
       skills: ["Python", "pandas", "PostgreSQL", "MySQL", "TypeScript", "Next.js", "Git", "Debian", "GNOME", "fish", "Starship"],
@@ -261,6 +275,16 @@ export const content = {
           featured: false,
         },
       ],
+    },
+    experience: {
+      label: "Pengalaman",
+      title: "Tempat saya terlibat",
+      present: "Sekarang",
+      roles: "peran",
+      yr: "thn",
+      yrs: "thn",
+      mo: "bln",
+      mos: "bln",
     },
     contact: {
       label: "Kontak",
