@@ -1,162 +1,133 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
 import { useTheme } from "next-themes";
-import { Moon, Sun, Globe, Menu, X } from "lucide-react";
+import { Moon, Sun, Menu, X } from "lucide-react";
 import { useLang } from "@/context/LanguageContext";
 import { content } from "@/lib/content";
+
+const control =
+  "inline-flex h-11 min-w-11 items-center justify-center gap-1.5 rounded-md border border-line-strong px-2.5 text-ink transition-colors duration-200 ease-out hover:border-ink";
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
-  const { theme, setTheme } = useTheme();
+  const { resolvedTheme, setTheme } = useTheme();
   const { lang, toggleLang } = useLang();
   const t = content[lang].nav;
 
   useEffect(() => {
     setMounted(true);
     const onScroll = () => setScrolled(window.scrollY > 24);
+    onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
+  useEffect(() => {
+    if (!mobileOpen) return;
+    const onKey = (e: KeyboardEvent) => e.key === "Escape" && setMobileOpen(false);
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [mobileOpen]);
+
   const navLinks = [
-    { label: t.about, href: "#about" },
-    { label: t.services, href: "#services" },
     { label: t.projects, href: "#projects" },
+    { label: t.about, href: "#about" },
     { label: t.contact, href: "#contact" },
   ];
 
-  const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
-    e.preventDefault(); 
-    
-    const isMobileMenuOpen = mobileOpen;
-    
-    if (isMobileMenuOpen) {
-      setMobileOpen(false);
-    }
-
-    setTimeout(() => {
-      const targetId = href.replace("#", "");
-      const targetElement = document.getElementById(targetId);
-      
-      if (targetElement) {
-        const navHeight = 80; 
-        const elementPosition = targetElement.getBoundingClientRect().top;
-        const offsetPosition = elementPosition + window.scrollY - navHeight;
-
-        window.scrollTo({
-          top: offsetPosition,
-          behavior: "smooth"
-        });
-      }
-    }, isMobileMenuOpen ? 300 : 0);
-  };
+  // The server can't know the theme, so treat it as unknown until mount or the aria-label won't hydrate.
+  const isDark = mounted && resolvedTheme === "dark";
 
   return (
-    <motion.header
-      initial={{ y: -80, opacity: 0 }}
-      animate={{ y: 0, opacity: 1 }}
-      transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
-        scrolled || mobileOpen 
-          ? "bg-white/80 dark:bg-[#04070f]/85 backdrop-blur-xl border-b border-slate-200/80 dark:border-white/[0.06] shadow-sm"
-          : "bg-transparent"
+    <header
+      className={`fixed inset-x-0 top-0 z-50 transition-colors duration-300 ${
+        scrolled || mobileOpen
+          ? "nav-glass border-b border-line"
+          : "border-b border-transparent"
       }`}
     >
-      {/* Container utama navbar */}
-      <div className="relative">
-        <nav className="max-w-6xl mx-auto px-6 md:px-8 h-16 flex items-center justify-between">
-          {/* Logo */}
-          <a
-            href="#hero"
-            onClick={(e) => handleNavClick(e, "#hero")} 
-            className="font-display font-bold text-lg tracking-tight text-slate-900 dark:text-white hover:opacity-80 transition-opacity"
-          >
-            <span className="accent">H</span>
-            <span>F</span>
-            <span className="text-slate-400 dark:text-slate-600">.</span>
-          </a>
+      <a
+        href="#main"
+        className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-3 focus:z-50 focus:rounded-md focus:bg-purple-soft focus:px-4 focus:py-2.5 focus:text-ink"
+      >
+        {t.skip}
+      </a>
 
-          {/* Desktop Nav Links */}
-          <div className="hidden md:flex items-center gap-8">
-            {navLinks.map((link) => (
+      <nav className="mx-auto flex h-16 max-w-4xl items-center justify-between px-4 sm:px-6">
+        <a
+          href="#hero"
+          className="inline-flex h-11 min-w-11 items-center font-display text-lg font-bold tracking-tight text-ink"
+          onClick={() => setMobileOpen(false)}
+        >
+          HF<span className="stop" aria-hidden="true">.</span>
+        </a>
+
+        <ul className="hidden items-center gap-1 md:flex">
+          {navLinks.map((link) => (
+            <li key={link.href}>
               <a
-                key={link.href}
                 href={link.href}
-                onClick={(e) => handleNavClick(e, link.href)} 
-                className="text-sm font-sans font-medium text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors duration-200 tracking-wide"
+                className="inline-flex h-11 items-center px-3 text-sm font-medium text-muted transition-colors duration-200 ease-out hover:text-ink"
               >
                 {link.label}
               </a>
+            </li>
+          ))}
+        </ul>
+
+        <div className="flex items-center gap-2">
+          <button
+            type="button"
+            onClick={toggleLang}
+            className={`${control} font-mono text-xs`}
+            aria-label={t.toggleLang}
+          >
+            {lang === "en" ? "ID" : "EN"}
+          </button>
+
+          <button
+            type="button"
+            onClick={() => setTheme(isDark ? "light" : "dark")}
+            className={control}
+            aria-label={isDark ? t.toLight : t.toDark}
+          >
+            {/* Icon waits for mount so the server render cannot show the wrong theme. */}
+            {mounted ? isDark ? <Sun size={16} strokeWidth={1.5} /> : <Moon size={16} strokeWidth={1.5} /> : <span className="h-4 w-4" />}
+          </button>
+
+          <button
+            type="button"
+            className={`${control} text-sm font-medium md:hidden`}
+            onClick={() => setMobileOpen((open) => !open)}
+            aria-expanded={mobileOpen}
+            aria-controls="mobile-menu"
+          >
+            {mobileOpen ? <X size={16} strokeWidth={1.5} /> : <Menu size={16} strokeWidth={1.5} />}
+            {mobileOpen ? t.close : t.menu}
+          </button>
+        </div>
+      </nav>
+
+      {mobileOpen && (
+        <div id="mobile-menu" className="border-t border-line bg-paper md:hidden">
+          <ul className="mx-auto flex max-w-4xl flex-col px-4 py-3 sm:px-6">
+            {navLinks.map((link) => (
+              <li key={link.href}>
+                <a
+                  href={link.href}
+                  className="flex min-h-12 items-center text-base font-medium text-ink"
+                  onClick={() => setMobileOpen(false)}
+                >
+                  {link.label}
+                </a>
+              </li>
             ))}
-          </div>
-
-          {/* Controls */}
-          <div className="flex items-center gap-2">
-            {/* Language Toggle */}
-            <button
-              onClick={toggleLang}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-mono font-medium border border-slate-200 dark:border-white/10 text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:border-slate-300 dark:hover:border-white/20 transition-all duration-200"
-              aria-label="Toggle language"
-            >
-              <Globe size={11} />
-              <span>{lang.toUpperCase()}</span>
-            </button>
-
-            {/* Theme Toggle */}
-            {mounted && (
-              <button
-                onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-                className="p-2 rounded-full border border-slate-200 dark:border-white/10 text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:border-slate-300 dark:hover:border-white/20 transition-all duration-200"
-                aria-label="Toggle theme"
-              >
-                {theme === "dark" ? <Sun size={13} /> : <Moon size={13} />}
-              </button>
-            )}
-
-            {/* Mobile Hamburger */}
-            <button
-              className="md:hidden p-2 rounded-full border border-slate-200 dark:border-white/10 text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-all duration-200"
-              onClick={() => setMobileOpen(!mobileOpen)}
-              aria-label="Toggle menu"
-            >
-              {mobileOpen ? <X size={13} /> : <Menu size={13} />}
-            </button>
-          </div>
-        </nav>
-
-        {/* Mobile Menu */}
-        <AnimatePresence>
-          {mobileOpen && (
-            <motion.div
-              initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: "auto" }}
-              exit={{ opacity: 0, height: 0 }}
-              transition={{ duration: 0.25, ease: "easeInOut" }}
-              className="md:hidden absolute top-full left-0 w-full overflow-hidden border-b border-slate-200/80 dark:border-white/[0.06] bg-white/95 dark:bg-[#04070f]/95 backdrop-blur-xl shadow-lg"
-            >
-              <div className="max-w-6xl mx-auto px-6 py-5 flex flex-col gap-2">
-                {navLinks.map((link, i) => (
-                  <motion.a
-                    key={link.href}
-                    href={link.href}
-                    initial={{ opacity: 0, x: -12 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: i * 0.06 }}
-                    className="block w-full py-3 text-base font-sans font-medium text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors"
-                    onClick={(e) => handleNavClick(e, link.href)} 
-                  >
-                    {link.label}
-                  </motion.a>
-                ))}
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </div>
-    </motion.header>
+          </ul>
+        </div>
+      )}
+    </header>
   );
 }

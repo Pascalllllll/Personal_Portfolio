@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useContext, useState, ReactNode } from "react";
+import { createContext, useContext, useEffect, useState, ReactNode } from "react";
 import type { Lang } from "@/lib/content";
 
 interface LanguageContextType {
@@ -15,6 +15,11 @@ const LanguageContext = createContext<LanguageContextType>({
 
 export function LanguageProvider({ children }: { children: ReactNode }) {
   const [lang, setLang] = useState<Lang>("en");
+
+  // Screen readers pick pronunciation from <html lang>.
+  useEffect(() => {
+    document.documentElement.lang = lang;
+  }, [lang]);
 
   const toggleLang = () => {
     setLang((prev) => (prev === "en" ? "id" : "en"));

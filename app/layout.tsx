@@ -1,37 +1,34 @@
 import type { Metadata } from "next";
-import { Syne, DM_Sans, JetBrains_Mono, Geist } from "next/font/google";
+import { Playfair_Display, Plus_Jakarta_Sans, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import Providers from "@/components/Providers";
-import { cn } from "@/lib/utils";
 
-const geist = Geist({subsets:['latin'],variable:'--font-sans'});
-
-const syne = Syne({
+const playfair = Playfair_Display({
   subsets: ["latin"],
-  variable: "--font-syne",
-  weight: ["400", "500", "600", "700", "800"],
+  variable: "--font-playfair",
+  weight: ["500", "600", "700"],
   display: "swap",
 });
 
-const dmSans = DM_Sans({
+const jakarta = Plus_Jakarta_Sans({
   subsets: ["latin"],
-  variable: "--font-dm-sans",
-  weight: ["300", "400", "500", "600"],
+  variable: "--font-jakarta",
+  weight: ["400", "500", "600"],
   display: "swap",
 });
 
 const jetbrainsMono = JetBrains_Mono({
   subsets: ["latin"],
   variable: "--font-jetbrains",
-  weight: ["400", "500"],
+  weight: ["400"],
   display: "swap",
 });
 
 export const metadata: Metadata = {
   title: "Hosea Felix Sanjaya | Portfolio",
   description:
-    "Personal portfolio of Hosea Felix Sanjaya, an Informatics Engineering student at ITS Surabaya specializing in software engineering, computer networking, and data analysis.",
-  keywords: ["software engineer", "ITS", "robotics", "networking", "portfolio"],
+    "Portfolio of Hosea Felix Sanjaya, Informatics Engineering student at ITS Surabaya working on software engineering, computer networking, and data analysis.",
+  keywords: ["software engineer", "ITS", "data", "networking", "portfolio"],
 };
 
 export default function RootLayout({
@@ -43,9 +40,9 @@ export default function RootLayout({
     <html
       lang="en"
       suppressHydrationWarning
-      className={cn(syne.variable, dmSans.variable, jetbrainsMono.variable, "font-sans", geist.variable)}
+      className={`${playfair.variable} ${jakarta.variable} ${jetbrainsMono.variable}`}
     >
-      <body className="grain">
+      <body>
         <Providers>{children}</Providers>
       </body>
     </html>

@@ -1,26 +1,80 @@
 "use client";
 
 import { useRef, useState } from "react";
-import { motion, useInView } from "framer-motion";
-import { Github, Linkedin, Mail, Send, CheckCircle, AlertCircle } from "lucide-react";
+import { AlertCircle, Github, Linkedin, Mail } from "lucide-react";
 import { useLang } from "@/context/LanguageContext";
 import { content } from "@/lib/content";
-import { fadeInUp, slideInLeft, slideInRight } from "@/lib/animations";
-import { FloatingPaths } from "@/components/ui/background-paths";
+import SectionHeading from "@/components/SectionHeading";
+
+const EMAIL = "hoseeee777@gmail.com";
+
+// Web3Forms keys are public by design (an alias for the inbox, not a secret), and its free
+// plan only accepts browser-side submissions, so the key lives in client code on purpose.
+const WEB3FORMS_ACCESS_KEY = "27207f0c-efea-437c-bc6a-93e44e2452f0";
+
+// Rejects "abc", "abc@", "@example.com" and "abc@." without refusing unusual but valid addresses.
+const EMAIL_PATTERN = /^[^\s@]+@[^\s@.]+(\.[^\s@.]+)+$/;
+
+type Field = "name" | "email" | "message";
+type ErrorKey = "errName" | "errEmailEmpty" | "errEmailInvalid" | "errMessage";
+
+function validate(form: Record<Field, string>) {
+  const errors: Partial<Record<Field, ErrorKey>> = {};
+  const email = form.email.trim();
+  if (!form.name.trim()) errors.name = "errName";
+  if (!email) errors.email = "errEmailEmpty";
+  else if (!EMAIL_PATTERN.test(email)) errors.email = "errEmailInvalid";
+  if (!form.message.trim()) errors.message = "errMessage";
+  return errors;
+}
+
+const socials = [
+  { icon: Github, label: "GitHub", href: "https://github.com/Pascalllllll", handle: "@Pascalllllll" },
+  {
+    icon: Linkedin,
+    label: "LinkedIn",
+    href: "https://www.linkedin.com/in/hoseafs-3a9a0931b/",
+    handle: "Hosea Felix Sanjaya",
+  },
+  { icon: Mail, label: "Email", href: `mailto:${EMAIL}`, handle: EMAIL },
+];
+
+const input =
+  "w-full rounded-md border border-line-strong aria-[invalid=true]:border-2 aria-[invalid=true]:border-ink bg-raised px-4 py-3 text-base text-ink placeholder:text-faint transition-colors duration-200 ease-out hover:border-ink disabled:opacity-60";
 
 export default function Contact() {
   const { lang } = useLang();
   const t = content[lang].contact;
-  const ref = useRef(null);
-  const isInView = useInView(ref, { once: true, margin: "-100px" });
-  
+
   const [form, setForm] = useState({ name: "", email: "", message: "" });
+  const [botcheck, setBotcheck] = useState(false);
+  const [errors, setErrors] = useState<Partial<Record<Field, ErrorKey>>>({});
   const [status, setStatus] = useState<"idle" | "sending" | "success" | "error">("idle");
+  const inFlight = useRef(false);
+
+  const update = (field: Field, value: string) => {
+    const next = { ...form, [field]: value };
+    setForm(next);
+    // Once an error is showing, re-check as the visitor types so it clears as soon as it is fixed.
+    if (errors[field]) setErrors(validate(next));
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (inFlight.current) return;
+
+    const found = validate(form);
+    setErrors(found);
+    const first = (Object.keys(found) as Field[])[0];
+    if (first) {
+      document.getElementById(`contact-${first}`)?.focus();
+      return;
+    }
+
+    inFlight.current = true;
     setStatus("sending");
 
+    const name = form.name.trim();
     try {
       const response = await fetch("https://api.web3forms.com/submit", {
         method: "POST",
@@ -29,213 +83,186 @@ export default function Contact() {
           Accept: "application/json",
         },
         body: JSON.stringify({
-          access_key: "27207f0c-efea-437c-bc6a-93e44e2452f0",
-          name: form.name,
-          email: form.email,
-          message: form.message,
-          subject: `Portfolio Contact from: ${form.name}`,
+          access_key: WEB3FORMS_ACCESS_KEY,
+          name,
+          // Web3Forms sets Reply-To from this field, so replies go straight to the visitor.
+          email: form.email.trim(),
+          message: form.message.trim(),
+          subject: `Portfolio Contact from: ${name}`,
           from_name: "Hosea Felix Portfolio",
+          botcheck,
         }),
       });
 
-      const result = await response.json();
+      const result = await response.json().catch(() => null);
 
-      if (result.success) {
+      if (response.ok && result?.success) {
         setStatus("success");
         setForm({ name: "", email: "", message: "" });
-        setTimeout(() => setStatus("idle"), 5000);
       } else {
-        console.error("Web3Forms Error:", result);
+        console.error("Web3Forms Error:", response.status, result?.body?.message ?? result);
         setStatus("error");
-        setTimeout(() => setStatus("idle"), 5000);
       }
     } catch (error) {
       console.error("Fetch Error:", error);
       setStatus("error");
-      setTimeout(() => setStatus("idle"), 5000);
+    } finally {
+      inFlight.current = false;
     }
   };
 
-  const socials = [
-    {
-      icon: Github,
-      label: "GitHub",
-      href: "https://github.com/Pascalllllll",
-      handle: "@Pascalllllll",
-    },
-    {
-      icon: Linkedin,
-      label: "LinkedIn",
-      href: "https://www.linkedin.com/in/hoseafs-3a9a0931b/",
-      handle: "Hosea Felix Sanjaya",
-    },
-    {
-      icon: Mail,
-      label: "Email",
-      href: "mailto:hoseeee777@gmail.com",
-      handle: "hoseeee777@gmail.com",
-    },
-  ];
-
-  const inputBase =
-    "w-full px-4 py-3.5 rounded-xl border border-slate-200 dark:border-white/[0.08] bg-slate-50 dark:bg-white/[0.03] text-sm font-sans text-slate-700 dark:text-slate-200 placeholder-slate-400 dark:placeholder-slate-600 focus:outline-none focus:border-[var(--accent)] dark:focus:border-[var(--accent)] focus:ring-2 focus:ring-[var(--accent-dim)] transition-all duration-200";
+  const sending = status === "sending";
 
   return (
-    <section id="contact" className="section relative overflow-hidden" ref={ref}>
-      
-      {/* Background Animasi Shadcn */}
-      <div className="absolute inset-0 z-0 pointer-events-none">
-        <FloatingPaths position={1} />
-        <FloatingPaths position={-1} />
-      </div>
+    <section id="contact" aria-labelledby="contact-title" className="section">
+      <div className="mx-auto max-w-4xl px-4 sm:px-6">
+        <SectionHeading id="contact-title" label={t.label} title={t.title} />
 
-      <div className="max-w-6xl mx-auto px-6 md:px-8 relative z-10">
-        {/* Section label */}
-        <motion.div
-          variants={fadeInUp}
-          initial="hidden"
-          animate={isInView ? "visible" : "hidden"}
-          className="flex items-center gap-3 mb-16"
-        >
-          <span className="text-xs font-mono tracking-widest uppercase accent">{t.label}</span>
-          <span className="flex-1 max-w-12 h-px bg-slate-200 dark:bg-white/10" />
-        </motion.div>
+        <div className="grid gap-12 md:grid-cols-[minmax(0,2fr)_minmax(0,3fr)] md:gap-14">
+          <div>
+            <p className="text-muted">{t.subtitle}</p>
 
-        <div className="grid lg:grid-cols-2 gap-16 lg:gap-24">
-          {/* Left — Heading + Socials */}
-          <motion.div
-            variants={slideInLeft}
-            initial="hidden"
-            animate={isInView ? "visible" : "hidden"}
-          >
-            <h2 className="font-display text-3xl md:text-4xl lg:text-5xl font-700 text-slate-900 dark:text-white tracking-tight leading-tight mb-6">
-              {t.title}
-            </h2>
-            <p className="font-sans font-light text-slate-500 dark:text-slate-400 leading-relaxed mb-14">
-              {t.subtitle}
-            </p>
-
-            {/* Socials */}
-            <div>
-              <p className="text-xs font-mono tracking-widest uppercase text-slate-400 dark:text-slate-600 mb-5">
-                {t.orReach}
-              </p>
-              <div className="flex flex-col gap-3">
-                {socials.map(({ icon: Icon, label, href, handle }) => (
+            <h3 className="mb-2 mt-10 text-sm font-medium text-faint">{t.orReach}</h3>
+            <ul className="border-t border-line">
+              {socials.map(({ icon: Icon, label, href, handle }) => (
+                <li key={label} className="border-b border-line">
                   <a
-                    key={label}
                     href={href}
-                    target="_blank"
+                    target={href.startsWith("mailto:") ? undefined : "_blank"}
                     rel="noopener noreferrer"
-                    className="group flex items-center gap-4 p-4 rounded-xl border border-slate-200 dark:border-white/[0.07] hover:border-slate-300 dark:hover:border-white/[0.14] bg-white dark:bg-transparent hover:bg-slate-50 dark:hover:bg-white/[0.03] transition-all duration-200"
+                    className="group flex min-h-14 items-center gap-4 py-3"
                   >
-                    <div className="w-9 h-9 rounded-lg bg-slate-100 dark:bg-white/[0.04] border border-slate-200 dark:border-white/[0.07] flex items-center justify-center text-slate-400 dark:text-slate-500 group-hover:text-[var(--accent)] group-hover:border-[var(--accent)]/30 group-hover:bg-[var(--accent-dim)] transition-all duration-200 flex-shrink-0">
-                      <Icon size={15} />
-                    </div>
-                    <div>
-                      <div className="text-xs font-mono text-slate-400 dark:text-slate-500 mb-0.5">
-                        {label}
-                      </div>
-                      <div className="text-sm font-sans font-medium text-slate-700 dark:text-slate-300 group-hover:text-slate-900 dark:group-hover:text-white transition-colors">
-                        {handle}
-                      </div>
-                    </div>
+                    <Icon size={18} strokeWidth={1.5} aria-hidden="true" className="flex-shrink-0 text-muted" />
+                    <span className="w-16 flex-shrink-0 text-sm text-faint">{label}</span>
+                    <span className="link min-w-0 break-words text-sm font-medium text-ink">
+                      {handle}
+                    </span>
                   </a>
-                ))}
-              </div>
-            </div>
-          </motion.div>
+                </li>
+              ))}
+            </ul>
+          </div>
 
-          {/* Right — Form */}
-          <motion.div
-            variants={slideInRight}
-            initial="hidden"
-            animate={isInView ? "visible" : "hidden"}
-          >
+          <div aria-live="polite">
             {status === "success" ? (
-              <motion.div
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
-                className="h-full flex flex-col items-center justify-center text-center p-10 rounded-2xl border border-emerald-200 dark:border-emerald-500/20 bg-emerald-50 dark:bg-emerald-500/[0.05]"
-              >
-                <CheckCircle size={36} className="text-emerald-500 mb-4" />
-                <p className="font-display font-600 text-slate-800 dark:text-slate-200 text-lg mb-2">
-                  {t.success}
-                </p>
-              </motion.div>
+              <div className="rounded-lg border border-line bg-raised p-6 md:p-8">
+                <p className="font-display text-xl font-medium text-ink">{t.success}</p>
+                <button type="button" onClick={() => setStatus("idle")} className="btn-outline mt-6">
+                  {t.sendAnother}
+                </button>
+              </div>
             ) : status === "error" ? (
-              <motion.div
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
-                className="h-full flex flex-col items-center justify-center text-center p-10 rounded-2xl border border-red-200 dark:border-red-500/20 bg-red-50 dark:bg-red-500/[0.05]"
-              >
-                <AlertCircle size={36} className="text-red-500 mb-4" />
-                <p className="font-display font-600 text-slate-800 dark:text-slate-200 text-lg mb-2">
-                  {lang === "en" ? "Oops! Something went wrong." : "Waduh! Terjadi kesalahan."}
+              <div className="rounded-lg border-2 border-line-strong bg-raised p-6 md:p-8">
+                <p className="font-display text-xl font-medium text-ink">{t.errorTitle}</p>
+                <p className="mt-2 text-muted">
+                  {t.errorBody}{" "}
+                  <a href={`mailto:${EMAIL}`} className="link break-words font-medium text-ink">
+                    {EMAIL}
+                  </a>
+                  .
                 </p>
-                <p className="text-sm text-slate-500 dark:text-slate-400">
-                  {lang === "en" ? "Please try again later." : "Silakan coba lagi nanti."}
-                </p>
-              </motion.div>
+                <button type="button" onClick={() => setStatus("idle")} className="btn-outline mt-6">
+                  {t.retry}
+                </button>
+              </div>
             ) : (
-              // Tampilan Form Input
-              <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+              <form onSubmit={handleSubmit} noValidate className="flex flex-col gap-5">
+                {/* Honeypot for bots; Web3Forms drops submissions where it is checked. */}
+                <input
+                  type="checkbox"
+                  name="botcheck"
+                  tabIndex={-1}
+                  autoComplete="off"
+                  aria-hidden="true"
+                  className="hidden"
+                  checked={botcheck}
+                  onChange={(e) => setBotcheck(e.target.checked)}
+                />
                 <div>
+                  <label htmlFor="contact-name" className="mb-2 block text-sm font-medium text-ink">
+                    {t.nameLabel}
+                  </label>
                   <input
+                    id="contact-name"
+                    name="name"
                     type="text"
-                    required
+                    autoComplete="name"
                     placeholder={t.namePlaceholder}
                     value={form.name}
-                    onChange={(e) => setForm({ ...form, name: e.target.value })}
-                    className={inputBase}
-                    disabled={status === "sending"}
+                    onChange={(e) => update("name", e.target.value)}
+                    aria-invalid={errors.name ? true : undefined}
+                    aria-describedby={errors.name ? "contact-name-error" : undefined}
+                    className={input}
+                    disabled={sending}
                   />
+                  <FieldError id="contact-name-error" message={errors.name && t[errors.name]} />
                 </div>
                 <div>
+                  <label htmlFor="contact-email" className="mb-2 block text-sm font-medium text-ink">
+                    {t.emailLabel}
+                  </label>
                   <input
+                    id="contact-email"
+                    name="email"
                     type="email"
-                    required
+                    autoComplete="email"
                     placeholder={t.emailPlaceholder}
                     value={form.email}
-                    onChange={(e) => setForm({ ...form, email: e.target.value })}
-                    className={inputBase}
-                    disabled={status === "sending"}
+                    onChange={(e) => update("email", e.target.value)}
+                    aria-invalid={errors.email ? true : undefined}
+                    aria-describedby={errors.email ? "contact-email-error" : undefined}
+                    className={input}
+                    disabled={sending}
                   />
+                  <FieldError id="contact-email-error" message={errors.email && t[errors.email]} />
                 </div>
                 <div>
+                  <label htmlFor="contact-message" className="mb-2 block text-sm font-medium text-ink">
+                    {t.messageLabel}
+                  </label>
                   <textarea
-                    required
+                    id="contact-message"
+                    name="message"
                     rows={5}
                     placeholder={t.messagePlaceholder}
                     value={form.message}
-                    onChange={(e) => setForm({ ...form, message: e.target.value })}
-                    className={`${inputBase} resize-none`}
-                    disabled={status === "sending"}
+                    onChange={(e) => update("message", e.target.value)}
+                    aria-invalid={errors.message ? true : undefined}
+                    aria-describedby={errors.message ? "contact-message-error" : undefined}
+                    className={`${input} resize-y`}
+                    disabled={sending}
                   />
+                  <FieldError id="contact-message-error" message={errors.message && t[errors.message]} />
                 </div>
 
                 <button
                   type="submit"
-                  disabled={status === "sending"}
-                  className="btn-primary justify-center mt-2 disabled:opacity-60 disabled:cursor-not-allowed"
+                  disabled={sending}
+                  className="btn-primary self-start disabled:cursor-not-allowed disabled:opacity-70"
                 >
-                  {status === "sending" ? (
-                    <>
-                      <span className="w-3.5 h-3.5 rounded-full border-2 border-current border-t-transparent animate-spin" />
-                      {t.sending}
-                    </>
-                  ) : (
-                    <>
-                      <Send size={14} />
-                      {t.send}
-                    </>
+                  {sending && (
+                    <span
+                      aria-hidden="true"
+                      className="h-3.5 w-3.5 animate-spin rounded-full border-2 border-current border-t-transparent"
+                    />
                   )}
+                  {sending ? t.sending : t.send}
                 </button>
               </form>
             )}
-          </motion.div>
+          </div>
         </div>
       </div>
     </section>
+  );
+}
+
+function FieldError({ id, message }: { id: string; message?: string }) {
+  if (!message) return null;
+  return (
+    <p id={id} className="mt-2 flex items-start gap-1.5 text-sm font-medium text-ink">
+      <AlertCircle size={16} strokeWidth={1.5} aria-hidden="true" className="mt-0.5 flex-shrink-0" />
+      {message}
+    </p>
   );
 }

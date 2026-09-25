@@ -2,312 +2,129 @@
 @tailwind components;
 @tailwind utilities;
 
-/* ─── CSS Custom Properties ─────────────────────────────── */
+/* Palette from design.MD; the decisions section at its end explains the adjusted values. */
 :root {
-  --accent: #0e9bb5;
-  --accent-dim: rgba(14, 155, 181, 0.12);
-  --surface: #f8fafc;
-  --scrollbar-thumb: #cbd5e1;
+  --paper: #fafafa;
+  --raised: #ffffff;
+  --line: #e5e5e5;
+  --line-strong: #737373;
+  --ink: #171717;
+  --muted: #525252;
+  --faint: #666666;
+  --purple: #8b7cc8;
+  --purple-soft: #e6dff5;
+  --purple-soft-hover: #d9cef0;
+  --gold: #c8a64e;
+  --tag-bg: #f5f5f5;
+  --tag-ink: #404040;
+  color-scheme: light;
 }
 
 .dark {
-  --accent: #22d3ee;
-  --accent-dim: rgba(34, 211, 238, 0.10);
-  --surface: #0d1117;
-  --scrollbar-thumb: #1e293b;
+  --paper: #0a0a0a;
+  --raised: #121212;
+  --line: #262626;
+  --line-strong: #737373;
+  --ink: #f5f5f5;
+  --muted: #a3a3a3;
+  --faint: #8a8a8a;
+  --purple: #b7a8e6;
+  --purple-soft: #2e2742;
+  --purple-soft-hover: #3a3052;
+  --gold: #d9c27a;
+  --tag-bg: #262626;
+  --tag-ink: #d4d4d4;
+  color-scheme: dark;
 }
 
-/* ─── Custom Scrollbar ───────────────────────────────────── */
-::-webkit-scrollbar { width: 4px; }
-::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb {
-  background: var(--scrollbar-thumb);
-  border-radius: 999px;
-}
-
-/* ─── Base ───────────────────────────────────────────────── */
+/* Background lives on html so the fluid canvas (z-index -10) can paint between it and the content. */
 html {
+  @apply bg-paper transition-colors duration-200 ease-out;
   scroll-behavior: smooth;
+  scroll-padding-top: 80px;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  scroll-padding-top: 80px;
 }
 
 body {
-  @apply bg-slate-50 dark:bg-[#04070f] text-slate-800 dark:text-slate-100 font-sans transition-colors duration-300;
+  @apply font-sans text-base leading-[1.6] text-ink;
 }
 
-/* ─── Selection ──────────────────────────────────────────── */
 ::selection {
-  background: var(--accent-dim);
-  color: var(--accent);
+  background: var(--purple-soft-hover);
+  color: var(--ink);
 }
 
-/* ─── Grain Overlay ──────────────────────────────────────── */
-.grain::before {
-  content: '';
-  position: fixed;
-  inset: 0;
-  pointer-events: none;
-  z-index: 999;
-  opacity: 0.025;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
-  background-size: 128px 128px;
+:focus-visible {
+  outline: 2px solid var(--purple);
+  outline-offset: 3px;
+  border-radius: 4px;
 }
 
-/* ─── Section Spacing ────────────────────────────────────── */
 .section {
-  @apply py-24 md:py-32;
+  @apply py-16 md:py-24;
 }
 
-/* ─── Glow Effect ────────────────────────────────────────── */
-.glow {
-  text-shadow: 0 0 40px var(--accent-dim);
+/* Gold full stop after headings. Decorative only, so it is hidden from screen readers. */
+.stop {
+  color: var(--gold);
 }
 
-/* ─── Accent Text ────────────────────────────────────────── */
-.accent {
-  color: var(--accent);
-}
-
-/* ─── Thin horizontal rule ───────────────────────────────── */
-.rule {
-  @apply border-t border-slate-200 dark:border-white/[0.06];
-}
-
-/* ─── Card hover glow ────────────────────────────────────── */
-.card-hover {
-  transition: border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
-}
-.card-hover:hover {
-  border-color: rgba(34, 211, 238, 0.25);
-  box-shadow: 0 0 0 1px rgba(34, 211, 238, 0.08), 0 8px 32px rgba(0, 0, 0, 0.12);
-  transform: translateY(-2px);
-}
-.dark .card-hover:hover {
-  box-shadow: 0 0 0 1px rgba(34, 211, 238, 0.12), 0 8px 40px rgba(0, 0, 0, 0.4);
-}
-
-/* ─── Button base ────────────────────────────────────────── */
 .btn-primary {
-  @apply inline-flex items-center gap-2 px-6 py-3 rounded-full text-sm font-medium font-sans tracking-wide transition-all duration-300;
-  background: var(--accent);
-  color: #04070f;
+  @apply inline-flex min-h-11 items-center justify-center gap-2 rounded-md border border-purple bg-purple-soft px-5 text-sm font-semibold text-ink transition-colors duration-200 ease-out;
 }
 .btn-primary:hover {
-  filter: brightness(1.1);
-  box-shadow: 0 0 24px var(--accent-dim);
-  transform: translateY(-1px);
+  @apply bg-purple-soft-hover;
 }
 
 .btn-outline {
-  @apply inline-flex items-center gap-2 px-6 py-3 rounded-full text-sm font-medium font-sans tracking-wide transition-all duration-300;
-  @apply border border-slate-300 dark:border-white/10 text-slate-600 dark:text-slate-300;
+  @apply inline-flex min-h-11 items-center justify-center gap-2 rounded-md border border-line-strong px-5 text-sm font-semibold text-ink transition-colors duration-200 ease-out;
 }
 .btn-outline:hover {
-  @apply border-slate-400 dark:border-white/20 text-slate-800 dark:text-white;
-  transform: translateY(-1px);
+  @apply border-ink;
 }
 
-/* ─── Animated Square Grid ───────────────────────────────── */
-.bg-grid-animated {
+/* Text links: ink text, soft gold underline that thickens on hover. */
+.link {
+  text-decoration-line: underline;
+  text-decoration-color: var(--gold);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 4px;
+  transition: text-decoration-thickness 200ms ease-out;
+}
+.link:hover,
+.group:hover .link {
+  text-decoration-thickness: 2px;
+}
+
+.tag {
+  @apply rounded bg-tag px-2 py-0.5 font-mono text-xs text-tag-ink;
+}
+
+/* Click burst bar: thin, pivoting on its left end so rotation starts at the click point. */
+.click-burst-bar {
   position: absolute;
-  inset: 0;
-  z-index: 0;
-  pointer-events: none;
-  background-size: 45px 45px; /* Ukuran kotak */
-  background-image:
-    linear-gradient(to right, rgba(0, 0, 0, 0.05) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(0, 0, 0, 0.05) 1px, transparent 1px);
-  animation: moveGrid 3s linear infinite;
-
-  /* Efek gradasi menghilang ke bawah supaya elegan & menyatu */
-  mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 40%, transparent 100%);
-  -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 40%, transparent 100%);
+  height: 2px;
+  border-radius: 1px;
+  background: var(--purple);
+  transform-origin: 0 50%;
 }
 
-/* Penyesuaian warna garis untuk Dark Mode */
-.dark .bg-grid-animated {
-  background-image:
-    linear-gradient(to right, rgba(255, 255, 255, 0.05) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+/* The one translucent surface: the scrolled navbar keeps page context visible. */
+.nav-glass {
+  background: color-mix(in srgb, var(--paper) 88%, transparent);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
 }
 
-/* Animasi bergeraknya */
-@keyframes moveGrid {
-  0% { background-position: 0 0; }
-  100% { background-position: 45px 45px; } /* Bergerak diagonal */
-}
-
-/* ─── Pattern: Dots (About) ────────────────────────────── */
-.bg-pattern-dots {
-  position: absolute;
-  inset: 0;
-  z-index: 0;
-  pointer-events: none;
-  background-image: radial-gradient(rgba(0, 0, 0, 0.08) 2px, transparent 2px);
-  background-size: 32px 32px;
-  animation: moveDots 4s linear infinite; 
-  mask-image: radial-gradient(ellipse at center, rgba(0,0,0,1) 10%, transparent 70%);
-  -webkit-mask-image: radial-gradient(ellipse at center, rgba(0,0,0,1) 10%, transparent 70%);
-}
-.dark .bg-pattern-dots {
-  background-image: radial-gradient(rgba(255, 255, 255, 0.06) 2px, transparent 2px);
-}
-@keyframes moveDots {
-  0% { background-position: 0 0; }
-  100% { background-position: 0 32px; }
-}
-
-/* ─── Pattern: Diagonal (Services) ─────────────────────── */
-.bg-pattern-diagonal {
-  position: absolute;
-  inset: 0;
-  z-index: 0;
-  pointer-events: none;
-  background-image: linear-gradient(45deg, transparent 48%, rgba(0,0,0,0.03) 49%, rgba(0,0,0,0.03) 51%, transparent 52%);
-  background-size: 16px 16px;
-  animation: moveDiagonal 3s linear infinite;
-  mask-image: linear-gradient(to bottom, transparent, rgba(0,0,0,1) 20%, rgba(0,0,0,1) 80%, transparent);
-  -webkit-mask-image: linear-gradient(to bottom, transparent, rgba(0,0,0,1) 20%, rgba(0,0,0,1) 80%, transparent);
-}
-.dark .bg-pattern-diagonal {
-  background-image: linear-gradient(45deg, transparent 48%, rgba(255,255,255,0.02) 49%, rgba(255,255,255,0.02) 51%, transparent 52%);
-}
-@keyframes moveDiagonal {
-  0% { background-position: 0 0; }
-  100% { background-position: 16px 16px; } 
-}
-
-/* ─── Pattern: Large Grid (Projects) ───────────────────── */
-.bg-pattern-grid-lg {
-  position: absolute;
-  inset: 0;
-  z-index: 0;
-  pointer-events: none;
-  background-size: 80px 80px;
-  background-image:
-    linear-gradient(to right, rgba(0, 0, 0, 0.04) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(0, 0, 0, 0.04) 1px, transparent 1px);
-  animation: moveGridLg 6s linear infinite; /* Animasi ditambahkan */
-  mask-image: radial-gradient(ellipse at top, rgba(0,0,0,1) 0%, transparent 70%);
-  -webkit-mask-image: radial-gradient(ellipse at top, rgba(0,0,0,1) 0%, transparent 70%);
-}
-.dark .bg-pattern-grid-lg {
-  background-image:
-    linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
-}
-@keyframes moveGridLg {
-  0% { background-position: 0 0; }
-  100% { background-position: 0 80px; } 
-}
-
-/* ─── Pattern: Data Stream (Contact) ───────────────────── */
-.bg-pattern-data {
-  position: absolute;
-  inset: 0;
-  z-index: 0;
-  pointer-events: none;
-  /* Garis vertikal tipis */
-  background-image: linear-gradient(90deg, rgba(0, 0, 0, 0.04) 1px, transparent 1px);
-  background-size: 32px 100%; /* Jarak antar garis vertikal */
-  animation: streamMove 4s linear infinite;
-
-  /* Memudar dari atas ke bawah supaya transisinya mulus dengan section atas */
-  mask-image: linear-gradient(to top, rgba(0,0,0,1) 5%, transparent 80%);
-  -webkit-mask-image: linear-gradient(to top, rgba(0,0,0,1) 5%, transparent 80%);
-}
-
-.dark .bg-pattern-data {
-  background-image: linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
-}
-
-@keyframes streamMove {
-  0% { background-position: 0 0; }
-  100% { background-position: 32px 0; } /* Garis berjalan ke arah kanan */
-}
-
-@layer base {
-  .theme {
-    --font-heading: var(--font-sans);
-    --font-sans: var(--font-sans);
-  }
-  :root {
-    --background: oklch(1 0 0);
-    --foreground: oklch(0.145 0 0);
-    --card: oklch(1 0 0);
-    --card-foreground: oklch(0.145 0 0);
-    --popover: oklch(1 0 0);
-    --popover-foreground: oklch(0.145 0 0);
-    --primary: oklch(0.205 0 0);
-    --primary-foreground: oklch(0.985 0 0);
-    --secondary: oklch(0.97 0 0);
-    --secondary-foreground: oklch(0.205 0 0);
-    --muted: oklch(0.97 0 0);
-    --muted-foreground: oklch(0.556 0 0);
-    --accent: oklch(0.97 0 0);
-    --accent-foreground: oklch(0.205 0 0);
-    --destructive: oklch(0.577 0.245 27.325);
-    --border: oklch(0.922 0 0);
-    --input: oklch(0.922 0 0);
-    --ring: oklch(0.708 0 0);
-    --chart-1: oklch(0.87 0 0);
-    --chart-2: oklch(0.556 0 0);
-    --chart-3: oklch(0.439 0 0);
-    --chart-4: oklch(0.371 0 0);
-    --chart-5: oklch(0.269 0 0);
-    --radius: 0.625rem;
-    --sidebar: oklch(0.985 0 0);
-    --sidebar-foreground: oklch(0.145 0 0);
-    --sidebar-primary: oklch(0.205 0 0);
-    --sidebar-primary-foreground: oklch(0.985 0 0);
-    --sidebar-accent: oklch(0.97 0 0);
-    --sidebar-accent-foreground: oklch(0.205 0 0);
-    --sidebar-border: oklch(0.922 0 0);
-    --sidebar-ring: oklch(0.708 0 0);
-  }
-  .dark {
-    --background: oklch(0.145 0 0);
-    --foreground: oklch(0.985 0 0);
-    --card: oklch(0.205 0 0);
-    --card-foreground: oklch(0.985 0 0);
-    --popover: oklch(0.205 0 0);
-    --popover-foreground: oklch(0.985 0 0);
-    --primary: oklch(0.922 0 0);
-    --primary-foreground: oklch(0.205 0 0);
-    --secondary: oklch(0.269 0 0);
-    --secondary-foreground: oklch(0.985 0 0);
-    --muted: oklch(0.269 0 0);
-    --muted-foreground: oklch(0.708 0 0);
-    --accent: oklch(0.269 0 0);
-    --accent-foreground: oklch(0.985 0 0);
-    --destructive: oklch(0.704 0.191 22.216);
-    --border: oklch(1 0 0 / 10%);
-    --input: oklch(1 0 0 / 15%);
-    --ring: oklch(0.556 0 0);
-    --chart-1: oklch(0.87 0 0);
-    --chart-2: oklch(0.556 0 0);
-    --chart-3: oklch(0.439 0 0);
-    --chart-4: oklch(0.371 0 0);
-    --chart-5: oklch(0.269 0 0);
-    --sidebar: oklch(0.205 0 0);
-    --sidebar-foreground: oklch(0.985 0 0);
-    --sidebar-primary: oklch(0.488 0.243 264.376);
-    --sidebar-primary-foreground: oklch(0.985 0 0);
-    --sidebar-accent: oklch(0.269 0 0);
-    --sidebar-accent-foreground: oklch(0.985 0 0);
-    --sidebar-border: oklch(1 0 0 / 10%);
-    --sidebar-ring: oklch(0.556 0 0);
-  }
-  * {
-  @apply border-border;
-  outline-color: color-mix(in oklch, var(--ring) 50%, transparent);
-  }
-  body {
-    @apply bg-background text-foreground;
-  }
+@media (prefers-reduced-motion: reduce) {
   html {
-    @apply font-sans;
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
   }
 }
