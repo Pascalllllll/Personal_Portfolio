@@ -35,8 +35,8 @@ export default function Navbar() {
   }, [mobileOpen]);
 
   const navLinks = [
-    { label: t.projects, href: "#projects" },
     { label: t.about, href: "#about" },
+    { label: t.projects, href: "#projects" },
     { label: t.experience, href: "#experience" },
     { label: t.contact, href: "#contact" },
   ];
