@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { GATE_DONE_EVENT } from "@/components/OsGate";
 
 const TYPE_MS = 80;
 const DELETE_MS = 40;
@@ -24,8 +25,13 @@ export default function TypingName({ name, phrases }: { name: string; phrases: r
   const [deleting, setDeleting] = useState(false);
   const [animate, setAnimate] = useState(false);
 
+  // Hold on the name while the OS gate is up, so the cycle starts when the portfolio appears.
   useEffect(() => {
-    setAnimate(!window.matchMedia("(prefers-reduced-motion: reduce)").matches);
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const start = () => setAnimate(true);
+    if (!document.documentElement.classList.contains("gate-open")) return start();
+    window.addEventListener(GATE_DONE_EVENT, start, { once: true });
+    return () => window.removeEventListener(GATE_DONE_EVENT, start);
   }, []);
 
   const current = all[index];

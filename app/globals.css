@@ -164,6 +164,11 @@ body {
   transform: none;
   transition-delay: var(--reveal-delay, 0ms);
 }
+/* Hold reveals while the OS gate is up so the hero enters when the portfolio appears. */
+.reveal.gate-open [data-reveal][data-shown] {
+  opacity: 0;
+  transform: translateY(28px);
+}
 
 ::view-transition-old(root),
 ::view-transition-new(root) {
