@@ -12,13 +12,11 @@ type LinkPreviewProps = {
   className?: string;
   width?: number;
   height?: number;
-  /** Opens the link in a new tab, both from the trigger and from the preview card. */
   external?: boolean;
 } & ({ isStatic: true; imageSrc: string } | { isStatic?: false; imageSrc?: never });
 
 type Status = "loading" | "ready" | "error";
 
-// Microlink renders a live screenshot of the page. Its free tier is rate limited, so the error state matters.
 const screenshotUrl = (url: string, width: number, height: number, colorScheme: string) =>
   `https://api.microlink.io/?${new URLSearchParams({
     url,
@@ -32,7 +30,6 @@ const screenshotUrl = (url: string, width: number, height: number, colorScheme: 
     "viewport.height": String(height * 3),
   })}`;
 
-// Link that shows a screenshot of its destination above it on hover or keyboard focus.
 export const LinkPreview = ({
   children,
   url,
@@ -49,12 +46,10 @@ export const LinkPreview = ({
   const [isMounted, setIsMounted] = React.useState(false);
   const [status, setStatus] = React.useState<Status>("loading");
 
-  // The theme is only known on the client, so the screenshot URL waits for mount.
   React.useEffect(() => setIsMounted(true), []);
 
   const src = isStatic ? imageSrc : isMounted ? screenshotUrl(url, width, height, resolvedTheme === "light" ? "light" : "dark") : "";
 
-  // A server-rendered image can finish loading before hydration attaches onLoad, so read its state directly.
   const preload = React.useRef<HTMLImageElement>(null);
   React.useEffect(() => {
     const img = preload.current;
@@ -62,7 +57,6 @@ export const LinkPreview = ({
     else setStatus("loading");
   }, [src]);
 
-  // The card drifts a little toward the pointer's position along the trigger.
   const x = useMotionValue(0);
   const translateX = useSpring(x, { stiffness: 100, damping: 15 });
 
@@ -76,7 +70,6 @@ export const LinkPreview = ({
 
   return (
     <>
-      {/* Warm the cache so the screenshot is ready by the first hover. */}
       {src ? (
         <img
           ref={preload}
@@ -94,7 +87,6 @@ export const LinkPreview = ({
           {children}
         </HoverCardPrimitive.Trigger>
 
-        {/* Portalled, because the scroll-reveal transform on list items would otherwise trap the fixed card. */}
         <HoverCardPrimitive.Portal forceMount>
           <HoverCardPrimitive.Content
             forceMount
@@ -112,7 +104,6 @@ export const LinkPreview = ({
                   transition={{ duration: 0.2, ease: [0.22, 1, 0.36, 1] }}
                   style={{ x: translateX }}
                 >
-                  {/* The one elevated surface on the page: it floats over the card it previews. */}
                   <a
                     href={url}
                     {...target}

@@ -7,7 +7,6 @@ const DELETE_MS = 40;
 const HOLD_MS = 1800;
 const HOLD_NAME_MS = 3500;
 
-// A trailing period gets the accent colour, like the full stop after section headings.
 function Phrase({ text }: { text: string }) {
   if (!text.endsWith(".")) return <>{text}</>;
   return (
@@ -18,8 +17,6 @@ function Phrase({ text }: { text: string }) {
   );
 }
 
-// Cycles the heading through the name and the extra phrases, then back to the name.
-// Screen readers only ever get the name; the animation is decoration.
 export default function TypingName({ name, phrases }: { name: string; phrases: readonly string[] }) {
   const all = [`${name}.`, ...phrases];
   const [index, setIndex] = useState(0);
@@ -59,7 +56,6 @@ export default function TypingName({ name, phrases }: { name: string; phrases: r
   return (
     <>
       <span className="sr-only">{name}</span>
-      {/* Every phrase sits invisibly in the same grid cell, so the heading keeps the height of the longest one. */}
       <span className="grid" aria-hidden="true">
         {all.map((p) => (
           <span key={p} className="invisible col-start-1 row-start-1">

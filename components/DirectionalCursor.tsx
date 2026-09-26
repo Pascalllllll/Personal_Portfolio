@@ -2,24 +2,18 @@
 
 import { useEffect, useRef } from "react";
 
-// The arrow's tip sits at (TIP, TIP) in the SVG and points up-left, which is -135deg in screen angles.
 const TIP = 2;
 const REST_ANGLE = -135;
-// Movement shorter than this is jitter, not a direction.
 const MIN_TRAVEL = 6;
-// Time constant for easing the rotation toward the heading, in ms.
 const TURN_MS = 70;
 
 const INTERACTIVE = "a, button, [role='button'], label, select, summary";
-// Fields where the native I-beam is more useful than an arrow, plus disabled controls that keep their not-allowed cursor.
 const NATIVE =
   "textarea, [contenteditable=''], [contenteditable='true'], :disabled, " +
   "input:not([type='button'],[type='submit'],[type='reset'],[type='checkbox'],[type='radio'],[type='range'],[type='color'],[type='file'])";
 
-// Shortest signed difference between two angles, in (-180, 180].
 const turn = (from: number, to: number) => ((((to - from) % 360) + 540) % 360) - 180;
 
-// Figma-style arrow that rotates so its tip leads the direction the mouse is moving.
 export default function DirectionalCursor() {
   const arrow = useRef<HTMLDivElement>(null);
 
@@ -32,7 +26,6 @@ export default function DirectionalCursor() {
 
     let x = 0;
     let y = 0;
-    // Last point a heading was measured from.
     let anchorX = 0;
     let anchorY = 0;
     let angle = 0;
@@ -98,7 +91,6 @@ export default function DirectionalCursor() {
       render();
     };
 
-    // relatedTarget is null only when the pointer leaves the window, not when it crosses between elements.
     const onMouseOut = (e: MouseEvent) => {
       if (!e.relatedTarget) delete el.dataset.visible;
     };
@@ -107,7 +99,6 @@ export default function DirectionalCursor() {
       if (root.classList.contains("custom-cursor")) el.dataset.visible = "";
     };
 
-    // Reduced motion keeps the arrow but drops the rotation, so it rests in the classic pointer pose.
     const onReducedChange = () => {
       if (reduced.matches) {
         target = angle = 0;

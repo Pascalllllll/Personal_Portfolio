@@ -39,11 +39,8 @@ export default function Navbar() {
     { label: t.contact, href: "#contact" },
   ];
 
-  // The server can't know the theme, so treat it as unknown until mount or the aria-label won't hydrate.
   const isDark = mounted && resolvedTheme === "dark";
 
-  // The new theme grows as a circle out of the toggle. Browsers without view transitions, and visitors
-  // who prefer reduced motion, get an instant switch.
   const switchTheme = (e: MouseEvent<HTMLButtonElement>) => {
     const next = isDark ? "light" : "dark";
     if (!document.startViewTransition || window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
@@ -57,7 +54,6 @@ export default function Navbar() {
     const radius = Math.hypot(Math.max(x, window.innerWidth - x), Math.max(y, window.innerHeight - y));
 
     const transition = document.startViewTransition(() => {
-      // The snapshot of the new state is taken when this returns, so the class has to be on <html> by then.
       flushSync(() => setTheme(next));
       document.documentElement.classList.toggle("dark", next === "dark");
       document.documentElement.style.colorScheme = next;
@@ -118,7 +114,6 @@ export default function Navbar() {
             className={control}
             aria-label={isDark ? t.toLight : t.toDark}
           >
-            {/* Icon waits for mount so the server render cannot show the wrong theme. */}
             {mounted ? isDark ? <Sun size={16} strokeWidth={1.5} /> : <Moon size={16} strokeWidth={1.5} /> : <span className="h-4 w-4" />}
           </button>
 

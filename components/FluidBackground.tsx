@@ -2,11 +2,6 @@
 
 import { useEffect, useRef, useState } from "react";
 
-/*
- * Stable-fluids background (advection, vorticity confinement, Jacobi pressure projection).
- * Curl noise stirs it so it drifts without a visible loop; the pointer injects velocity and a faint wake.
- */
-
 type Tier = { sim: number; dye: number; iterations: number; interaction: number; fps: number };
 
 const TIERS: Record<"desktop" | "tablet" | "mobile", Tier> = {
@@ -15,11 +10,8 @@ const TIERS: Record<"desktop" | "tablet" | "mobile", Tier> = {
   mobile: { sim: 64, dye: 256, iterations: 8, interaction: 0, fps: 30 },
 };
 
-// Distance in px from the DirectionalCursor arrow's tip back to its tail.
 const CURSOR_TAIL = 16;
 
-// One hue per theme: purple smoke in light mode, gold in dark. These are the strongest tints the
-// fluid may reach; tertiary text keeps AA over them (4.74:1 light, 4.52:1 dark).
 const THEMES = {
   light: { paper: "#fafafa", a: "#ece7f7", b: "#ece7f7", lift: 1 },
   dark: { paper: "#0a0a0a", a: "#28231a", b: "#28231a", lift: 0.87 },
@@ -94,7 +86,6 @@ float snoise(vec3 v) {
   m = m * m;
   return 42.0 * dot(m * m, vec4(dot(p0, x0), dot(p1, x1), dot(p2, x2), dot(p3, x3)));
 }
-// Domain-warped so the field keeps changing shape instead of sliding in one direction.
 vec2 warp(vec2 p, float t) {
   return p + 0.8 * vec2(snoise(vec3(p * 0.5, t * 0.013)), snoise(vec3(p * 0.5 + 31.7, t * 0.011)));
 }
@@ -112,11 +103,9 @@ void main() {
   float g = exp(-dot(p, p) / radius);
   vec3 base = texture(uTarget, vUv).xyz;
   if (drag > 0.0) {
-    // Pull the local flow toward the pointer's velocity, so speed sets strength rather than event count.
     fragColor = vec4(mix(base.xy, color.xy, g * drag), base.z, 1.0);
     return;
   }
-  // Radial push grows smoothly from zero at the center; normalize(p) would jump there and advect into speckle.
   vec3 add = radial > 0.5 ? vec3(p / sqrt(radius) * color.x, 0.0) : color;
   fragColor = vec4(base + add * g, 1.0);
 }`,
@@ -139,7 +128,6 @@ float psi(vec2 p) {
 void main() {
   vec2 p = vec2(vUv.x * aspect, vUv.y) * 1.6;
   float e = 0.02;
-  // Curl of a scalar potential is divergence-free, so it stirs without clumping.
   vec2 curl = vec2(psi(p + vec2(0.0, e)) - psi(p - vec2(0.0, e)), -(psi(p + vec2(e, 0.0)) - psi(p - vec2(e, 0.0)))) / (2.0 * e);
   fragColor = vec4(texture(uVelocity, vUv).xy + curl * strength * dt, 0.0, 1.0);
 }`,
@@ -199,12 +187,10 @@ uniform sampler2D uDye;
 uniform vec3 paper, tintA, tintB;
 uniform float lift;
 void main() {
-  // lift < 1 raises mid-tones so dim hues read as clearly as bright ones; the cap still bounds the result.
   vec2 d = pow(clamp(texture(uDye, vUv).rg, 0.0, 1.0), vec2(lift));
   d = d * d * (3.0 - 2.0 * d);
   float s = d.x + d.y;
   if (s > 1.0) d /= s;
-  // A convex mix never gets darker than the capped tints, which keeps text contrast intact.
   fragColor = vec4(paper * (1.0 - d.x - d.y) + tintA * d.x + tintB * d.y, 1.0);
 }`,
 };
@@ -220,18 +206,14 @@ function tierFor(): Tier {
 
 export default function FluidBackground() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  // Bumped when the browser restores a lost GL context, which re-runs the setup below.
   const [generation, setGeneration] = useState(0);
 
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
     const gl = canvas.getContext("webgl2", { alpha: false, antialias: false, depth: false, stencil: false });
-    // Without float render targets the page simply keeps its flat background.
     if (!gl || gl.isContextLost() || !gl.getExtension("EXT_color_buffer_float")) return;
 
-    // Everything created here is deleted on cleanup. The context itself stays alive, because React
-    // remounts effects in development and a lost context can't be reused by the next mount.
     const owned: (() => void)[] = [];
     let lost = false;
 
@@ -311,7 +293,6 @@ export default function FluidBackground() {
     const allocate = () => {
       [velocity, dye, pressure].forEach((d) => d && (freeFBO(d.read), freeFBO(d.write)));
       [divergence, curl].forEach((f) => f && freeFBO(f));
-      // Half-resolution canvas: the field is soft, so the browser's upscale is invisible and much cheaper.
       canvas.width = Math.max(1, Math.round(window.innerWidth * 0.5));
       canvas.height = Math.max(1, Math.round(window.innerHeight * 0.5));
       aspect = canvas.width / canvas.height;
@@ -452,8 +433,6 @@ export default function FluidBackground() {
       draw(u, null, dye.read);
     };
 
-    // Run the field forward so the first frame already shows developed flow instead of an empty page.
-    // Semi-Lagrangian advection stays stable at large steps, so a few big ones keep the startup stall short.
     const prewarm = (steps: number) => {
       for (let i = 0; i < steps; i++) step(1 / 15);
     };
@@ -464,7 +443,6 @@ export default function FluidBackground() {
     render();
     canvas.style.opacity = "1";
 
-    // Pointer input is queued and applied once per frame.
     const pending: { x: number; y: number; dx: number; dy: number; speed: number; travel: number; click: boolean }[] = [];
     let last: { x: number; y: number; t: number } | null = null;
     const interactive = () => tier.interaction > 0 && !reducedMotion.matches;
@@ -490,7 +468,6 @@ export default function FluidBackground() {
     const applyInput = () => {
       const w = window.innerWidth;
       const h = window.innerHeight;
-      // Convert screen px/s into sim texels/s (sim cells are square).
       const toSim = velocity.read.h / h;
       for (const ev of pending.splice(0)) {
         const x = ev.x / w;
@@ -500,12 +477,9 @@ export default function FluidBackground() {
           splat(dye, x, y, [0, 0.1, 0], 0.0009);
           continue;
         }
-        // The cursor arrow's tip leads the motion, so its tail sits behind the pointer along the heading.
-        // Injecting there makes the smoke trail off the back of the arrow instead of welling up under the tip.
         const tail = ev.speed > 0 && document.documentElement.classList.contains("custom-cursor") ? CURSOR_TAIL / ev.speed : 0;
         const bx = (ev.x - ev.dx * tail) / w;
         const by = 1 - (ev.y - ev.dy * tail) / h;
-        // Faster pointer: faster local flow, wider reach, and a stronger wake per pixel travelled.
         const k = Math.min(ev.speed / 1500, 1);
         const drag = 0.85 * tier.interaction;
         splat(velocity, bx, by, [ev.dx * toSim, -ev.dy * toSim, 0], 0.0006 + 0.0022 * k, false, drag);
@@ -523,7 +497,6 @@ export default function FluidBackground() {
       if (elapsed < 1000 / tier.fps - 2) return;
       prev = now;
 
-      // Adaptive quality: if frames keep running long, spend fewer pressure iterations.
       if (elapsed > 24) slowFrames++;
       else slowFrames = Math.max(0, slowFrames - 1);
       if (slowFrames > 90 && iterations > 8) {
@@ -554,7 +527,6 @@ export default function FluidBackground() {
     const onResize = () => {
       window.clearTimeout(resizeTimer);
       resizeTimer = window.setTimeout(() => {
-        // Mobile URL bars change the height while scrolling; only rebuild on real layout changes.
         const w = window.innerWidth;
         const h = window.innerHeight;
         if (w === lastWidth && Math.abs(h - lastHeight) / lastHeight < 0.25) return;
@@ -580,7 +552,6 @@ export default function FluidBackground() {
     window.addEventListener("resize", onResize);
     reducedMotion.addEventListener("change", start);
 
-    // A GPU reset drops the context; hide the canvas until the browser hands a new one back.
     const onLost = (e: Event) => {
       e.preventDefault();
       lost = true;

@@ -2,7 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Palette from design.MD; the decisions section at its end explains the adjusted values. */
 :root {
   --paper: #fafafa;
   --raised: #ffffff;
@@ -18,12 +17,13 @@
   --tag-bg: #f5f5f5;
   --tag-ink: #404040;
   --burst: var(--purple);
-  /* Buttons and link underlines: purple in light mode, gold in dark. */
   --accent: var(--purple);
   --accent-soft: var(--purple-soft);
   --accent-soft-hover: var(--purple-soft-hover);
   --accent-border: var(--purple);
   --selection: var(--purple-soft-hover);
+  --scrollbar: #c7c7c7;
+  --scrollbar-hover: #a3a3a3;
   color-scheme: light;
 }
 
@@ -31,7 +31,6 @@
   --paper: #0a0a0a;
   --raised: #121212;
   --line: #262626;
-  /* Softened for dark mode; input borders keep 3.3:1 against raised surfaces. */
   --line-strong: #666666;
   --ink: #f5f5f5;
   --muted: #a3a3a3;
@@ -46,19 +45,39 @@
   --accent: var(--gold);
   --accent-soft: #2e2716;
   --accent-soft-hover: #3b321c;
-  /* Gold mixed halfway into the background: softer outline, still 3.5:1 against it. */
   --accent-border: #726642;
   --selection: #4a3f22;
+  --scrollbar: #3a3a3a;
+  --scrollbar-hover: #555555;
   color-scheme: dark;
 }
 
-/* Background lives on html so the fluid canvas (z-index -10) can paint between it and the content. */
 html {
   @apply bg-paper transition-colors duration-200 ease-out;
   scroll-behavior: smooth;
   scroll-padding-top: 80px;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  scrollbar-width: thin;
+  scrollbar-color: var(--scrollbar) transparent;
+}
+
+@supports not (scrollbar-color: auto) {
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: var(--scrollbar);
+    border: 3px solid var(--paper);
+    border-radius: 999px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: var(--scrollbar-hover);
+  }
 }
 
 body {
@@ -80,7 +99,6 @@ body {
   @apply py-16 md:py-24;
 }
 
-/* Accent full stop after headings. Decorative only, so it is hidden from screen readers. */
 .stop {
   color: var(--accent);
 }
@@ -99,7 +117,6 @@ body {
   @apply bg-accent-soft;
 }
 
-/* Text links: ink text, accent underline that thickens on hover. */
 .link {
   text-decoration-line: underline;
   text-decoration-color: var(--accent);
@@ -116,7 +133,6 @@ body {
   @apply rounded bg-tag px-2 py-0.5 font-mono text-xs text-tag-ink;
 }
 
-/* Typing caret in the hero heading. */
 .caret {
   display: inline-block;
   width: 0.06em;
@@ -132,7 +148,6 @@ body {
   }
 }
 
-/* Scroll reveal: see components/ScrollReveal.tsx. Only active once html.reveal is set. */
 .reveal [data-reveal] {
   opacity: 0;
   transform: translateY(28px);
@@ -150,14 +165,12 @@ body {
   transition-delay: var(--reveal-delay, 0ms);
 }
 
-/* Theme switch: the default view-transition cross-fade is replaced by the circle animation in Navbar. */
 ::view-transition-old(root),
 ::view-transition-new(root) {
   animation: none;
   mix-blend-mode: normal;
 }
 
-/* Click burst bar: thin, pivoting on its left end so rotation starts at the click point. */
 .click-burst-bar {
   position: absolute;
   height: 2px;
@@ -166,8 +179,6 @@ body {
   transform-origin: 0 50%;
 }
 
-/* Directional cursor: same color as the click burst so both pointer effects read as one gesture.
-   The white outline and small shadow keep the arrow legible over light paper and busy backgrounds. */
 html.custom-cursor,
 html.custom-cursor * {
   cursor: none !important;
@@ -210,11 +221,61 @@ html.custom-cursor :disabled {
   stroke-linejoin: round;
 }
 
-/* The one translucent surface: the scrolled navbar keeps page context visible. */
 .nav-glass {
   background: color-mix(in srgb, var(--paper) 88%, transparent);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
+}
+
+/* OS gate: the portfolio stays rendered underneath, hidden (and out of the tab order) until the gate hands off. */
+html.gate-open {
+  overflow: hidden;
+}
+.os-gated {
+  transition: opacity 600ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+html.gate-open .os-gated {
+  visibility: hidden;
+  opacity: 0;
+}
+html:not(.gate-open) .os-gate:not([data-leaving]) {
+  display: none;
+}
+.os-gate {
+  transition:
+    opacity 600ms cubic-bezier(0.22, 1, 0.36, 1),
+    transform 600ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+.os-gate[data-leaving] {
+  opacity: 0;
+  transform: scale(1.02);
+  pointer-events: none;
+}
+.os-gate-stage {
+  animation: gate-in 500ms cubic-bezier(0.22, 1, 0.36, 1) backwards;
+  transition:
+    opacity 400ms ease-out,
+    transform 400ms ease-out;
+}
+.os-gate-stage[data-exiting] {
+  opacity: 0;
+  transform: scale(0.98);
+  pointer-events: none;
+}
+@keyframes gate-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.98);
+  }
+}
+.os-gate-option {
+  transition:
+    background-color 200ms ease-out,
+    transform 200ms ease-out;
+}
+.os-gate-option:hover {
+  @apply bg-accent-soft;
+  transform: translateY(-2px);
 }
 
 @media (prefers-reduced-motion: reduce) {

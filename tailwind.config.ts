@@ -3,7 +3,6 @@ import type { Config } from "tailwindcss";
 const config: Config = {
   darkMode: ["class"],
   content: [
-    "./context/**/*.{js,ts,jsx,tsx,mdx}",
     "./lib/**/*.{js,ts,jsx,tsx,mdx}",
     "./components/**/*.{js,ts,jsx,tsx,mdx}",
     "./app/**/*.{js,ts,jsx,tsx,mdx}",
@@ -23,12 +22,6 @@ const config: Config = {
         ink: "var(--ink)",
         muted: "var(--muted)",
         faint: "var(--faint)",
-        purple: {
-          DEFAULT: "var(--purple)",
-          soft: "var(--purple-soft)",
-          "soft-hover": "var(--purple-soft-hover)",
-        },
-        gold: "var(--gold)",
         accent: {
           DEFAULT: "var(--accent)",
           soft: "var(--accent-soft)",

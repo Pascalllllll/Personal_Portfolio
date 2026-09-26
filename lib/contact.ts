@@ -1,14 +1,9 @@
-// Validation and addresses for the contact form.
-
-// The address published on the site; also the default inbox for form submissions.
 export const CONTACT_EMAIL = "hoseeee777@gmail.com";
 
-// Web3Forms access key. Not a secret: it can only deliver messages to the inbox it was issued for.
 export const WEB3FORMS_KEY = "4a07a739-f9ea-4f65-85fa-3c6c47af9d47";
 
 export const LIMITS = { name: 200, email: 254, message: 5000 } as const;
 
-// Rejects "abc", "abc@", "@example.com" and "abc@." without refusing unusual but valid addresses.
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@.]+(\.[^\s@.]+)+$/;
 
 export type Field = "name" | "email" | "message";

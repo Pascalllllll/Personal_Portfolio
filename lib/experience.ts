@@ -1,8 +1,6 @@
 export type Role = {
   title: string;
-  /** "YYYY-MM" */
   start: string;
-  /** "YYYY-MM", or null while the role is ongoing. */
   end: string | null;
   details: string[];
 };
@@ -11,11 +9,9 @@ export type Organization = {
   name: string;
   monogram: string;
   about: string;
-  /** Newest role first. */
   roles: Role[];
 };
 
-// Newest first, so the list reads upward from the oldest entry at the bottom. Source: CV_Hosea.pdf.
 export const experience: Organization[] = [
   {
     name: "Schematics ITS",

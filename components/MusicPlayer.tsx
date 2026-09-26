@@ -3,21 +3,20 @@
 import { useEffect, useRef, useState } from "react";
 import { Disc3 } from "lucide-react";
 import { content } from "@/lib/content";
+import { GATE_DONE_EVENT } from "@/components/OsGate";
 
 const SRC = "/music/misery.mp3";
-const AUTOPLAY_DELAY_MS = 3000;
-// Background music sits under the page, not over it: well below full volume.
+// Counted from when the portfolio appears, not from page load (the OS gate may come first).
+const AUTOPLAY_DELAY_MS = 5000;
 const VOLUME = 0.3;
 
 export default function MusicPlayer({ className }: { className: string }) {
   const audioRef = useRef<HTMLAudioElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
-  // Set once playback has started or the visitor has used the button, so autoplay never overrides them.
   const settledRef = useRef(false);
   const [playing, setPlaying] = useState(false);
   const t = content.nav;
 
-  // Keep the icon in sync if playback stops on its own, e.g. the file fails to load.
   useEffect(() => {
     const audio = audioRef.current;
     if (!audio) return;
@@ -40,8 +39,6 @@ export default function MusicPlayer({ className }: { className: string }) {
 
     const events = ["pointerdown", "keydown", "touchend"] as const;
     const removeUnlock = () => events.forEach((e) => window.removeEventListener(e, unlock));
-    // Browsers block sound until the visitor interacts with the page, so the first interaction starts it instead.
-    // Clicks on the player itself are left to its own toggle.
     function unlock(e: Event) {
       removeUnlock();
       if (settledRef.current || buttonRef.current?.contains(e.target as Node)) return;
@@ -49,16 +46,26 @@ export default function MusicPlayer({ className }: { className: string }) {
       audio!.play().catch(() => {});
     }
 
-    const timer = window.setTimeout(() => {
-      if (settledRef.current) return;
-      audio.play().then(
-        () => (settledRef.current = true),
-        () => events.forEach((e) => window.addEventListener(e, unlock)),
-      );
-    }, AUTOPLAY_DELAY_MS);
+    let timer = 0;
+    const schedule = () => {
+      timer = window.setTimeout(() => {
+        if (settledRef.current) return;
+        audio.play().then(
+          () => (settledRef.current = true),
+          () => events.forEach((e) => window.addEventListener(e, unlock)),
+        );
+      }, AUTOPLAY_DELAY_MS);
+    };
+
+    if (document.documentElement.classList.contains("gate-open")) {
+      window.addEventListener(GATE_DONE_EVENT, schedule, { once: true });
+    } else {
+      schedule();
+    }
 
     return () => {
       window.clearTimeout(timer);
+      window.removeEventListener(GATE_DONE_EVENT, schedule);
       removeUnlock();
     };
   }, []);
@@ -76,7 +83,7 @@ export default function MusicPlayer({ className }: { className: string }) {
 
   return (
     <>
-      <audio ref={audioRef} src={SRC} loop preload="auto" />
+      <audio ref={audioRef} src={SRC} loop preload="none" />
       <button
         ref={buttonRef}
         type="button"

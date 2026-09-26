@@ -17,7 +17,6 @@ const formatMonth = (ym: string) => {
   return `${MONTHS[m - 1]} ${y}`;
 };
 
-// Counts both end months, so Nov to Dec is 2 months.
 const monthsBetween = (start: string, end: string) => {
   const a = parse(start);
   const b = parse(end);
@@ -48,7 +47,6 @@ function Dates({ start, end, now, t }: { start: string; end: string | null; now:
           {end ? <time dateTime={end}>{formatMonth(end)}</time> : t.present}
         </>
       )}
-      {/* Ongoing roles need today's date, which only exists on the client, so their duration appears after mount. */}
       {until && <> · {formatDuration(monthsBetween(start, until), t)}</>}
     </p>
   );
@@ -66,7 +64,6 @@ function Details({ items }: { items: string[] }) {
   );
 }
 
-// Current roles get a filled accent marker; finished ones a hollow ring.
 function Marker({ current }: { current: boolean }) {
   return (
     <span
@@ -108,7 +105,6 @@ export default function Experience() {
                 key={org.name}
                 className="relative grid grid-cols-[2.75rem_minmax(0,1fr)] gap-x-4 pb-12 sm:gap-x-6"
               >
-                {/* The rail runs from this organisation's tile down to the next, and fades out under the oldest entry. */}
                 <span
                   aria-hidden="true"
                   className={`absolute bottom-0 left-[1.375rem] top-11 w-px -translate-x-1/2 ${

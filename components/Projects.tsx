@@ -29,8 +29,6 @@ export default function Projects() {
           {t.items.map((project) => (
             <li key={project.title} data-reveal>
               <article className="group relative rounded-lg border border-line bg-raised p-5 transition-colors duration-200 ease-out hover:border-line-strong md:p-6">
-                {/* Makes the whole card clickable. Kept apart from the title so only the title opens the preview;
-                    it duplicates the title link, so it stays out of the tab order and the accessibility tree. */}
                 <a
                   href={project.link}
                   target="_blank"
@@ -71,7 +69,6 @@ export default function Projects() {
                   </span>
                 </div>
 
-                {/* Focus ring on the card, drawn when the title link has keyboard focus. */}
                 <span
                   aria-hidden="true"
                   className="pointer-events-none absolute -inset-1 rounded-xl border-2 border-accent opacity-0 group-focus-within:opacity-100"

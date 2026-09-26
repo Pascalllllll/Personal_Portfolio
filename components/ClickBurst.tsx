@@ -5,7 +5,6 @@ import { useEffect, useRef } from "react";
 const RAYS = 7;
 const rand = (min: number, max: number) => min + Math.random() * (max - min);
 
-// Seven thin bars fly outward from the pointer on click, each rotated to its own radial angle.
 export default function ClickBurst() {
   const layer = useRef<HTMLDivElement>(null);
 
@@ -15,7 +14,6 @@ export default function ClickBurst() {
     const onPointerDown = (e: PointerEvent) => {
       if (e.button !== 0 || reduced.matches || !layer.current) return;
 
-      // One sector per ray, with a random start and jitter, so angles never land on a fixed grid.
       const sector = 360 / RAYS;
       const start = rand(0, 360);
 
@@ -32,7 +30,6 @@ export default function ClickBurst() {
         bar.style.top = `${e.clientY - 1}px`;
         bar.style.width = `${length}px`;
 
-        // rotate(angle) aligns the bar with its ray; translateX then moves it along that ray.
         const at = (r: number) => `rotate(${angle}deg) translateX(${r}px) rotate(${tilt}deg)`;
         const peak = rand(0.7, 1);
 
@@ -43,7 +40,6 @@ export default function ClickBurst() {
           ...timing,
           easing: "cubic-bezier(0.22, 1, 0.36, 1)",
         });
-        // Opacity holds for the first half, otherwise the fast ease-out fades the bars before they read.
         bar
           .animate([{ opacity: peak }, { opacity: peak, offset: 0.5 }, { opacity: 0 }], {
             ...timing,

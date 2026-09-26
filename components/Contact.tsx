@@ -35,7 +35,6 @@ export default function Contact() {
   const update = (field: Field, value: string) => {
     const next = { ...form, [field]: value };
     setForm(next);
-    // Once an error is showing, re-check as the visitor types so it clears as soon as it is fixed.
     if (errors[field]) setErrors(validate(normalize(next)));
   };
 
@@ -56,7 +55,6 @@ export default function Contact() {
     const input = normalize(form);
 
     try {
-      // Web3Forms emails the submission to the inbox tied to the access key. Its free plan only accepts browser requests.
       const response = await fetch("https://api.web3forms.com/submit", {
         method: "POST",
         headers: { "Content-Type": "application/json", Accept: "application/json" },
@@ -143,7 +141,6 @@ export default function Contact() {
               </div>
             ) : (
               <form onSubmit={handleSubmit} noValidate className="flex flex-col gap-5">
-                {/* Honeypot for bots; the server drops submissions where it is checked. */}
                 <input
                   type="checkbox"
                   name="botcheck"
