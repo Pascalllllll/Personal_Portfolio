@@ -12,7 +12,7 @@ type PhotoZoomProps = {
   className?: string;
 };
 
-// Same card and motion as LinkPreview, for an image that isn't a link.
+// Hover card with a 200ms fade and 6px lift, for an image that isn't a link.
 // Mouse only: the zoom is the same photo, so keyboard and touch users lose nothing.
 export const PhotoZoom = ({ children, src, size = 240, className }: PhotoZoomProps) => {
   const reduced = useReducedMotion();

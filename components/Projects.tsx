@@ -1,9 +1,10 @@
 "use client";
 
+import Image from "next/image";
 import { ArrowUpRight, Github } from "lucide-react";
 import { content } from "@/lib/content";
 import SectionHeading from "@/components/SectionHeading";
-import { LinkPreview } from "@/components/ui/link-preview";
+import { Card3D, Card3DLayer } from "@/components/ui/3d-card";
 
 export default function Projects() {
   const t = content.projects;
@@ -25,10 +26,11 @@ export default function Projects() {
           </a>
         </SectionHeading>
 
-        <ul className="flex flex-col gap-4">
+        <ul className="grid gap-5 md:grid-cols-2">
           {t.items.map((project) => (
             <li key={project.title} data-reveal>
-              <article className="group relative rounded-lg border border-line bg-raised p-5 transition-colors duration-200 ease-out hover:border-line-strong md:p-6">
+              <Card3D className="group relative flex flex-col rounded-lg border border-line bg-raised transition-[border-color,box-shadow] duration-200 ease-out hover:border-line-strong hover:shadow-[0_12px_32px_rgb(0_0_0/0.12)]">
+                {/* Whole-card click target; the title link below is the one keyboard stop. */}
                 <a
                   href={project.link}
                   target="_blank"
@@ -37,43 +39,58 @@ export default function Projects() {
                   aria-hidden="true"
                   className="absolute inset-0 rounded-lg"
                 />
-                <div className="flex items-baseline justify-between gap-4">
-                  <h3 className="text-balance font-display text-xl font-semibold text-ink">
-                    <LinkPreview
-                      url={project.link}
-                      external
-                      isStatic
-                      imageSrc={project.preview}
-                      className="relative z-10 focus-visible:outline-none"
-                    >
-                      {project.title}
-                    </LinkPreview>
-                  </h3>
-                  <span className="flex-shrink-0 font-mono text-sm tabular-nums text-faint">{project.year}</span>
-                </div>
 
-                <p className="mt-2 text-muted">{project.desc}</p>
+                {/* Lifted layers let clicks fall through to the card link, except the title link. */}
+                <Card3DLayer depth={40} className="pointer-events-none p-3 pb-0">
+                  <div className="relative aspect-[16/10] overflow-hidden rounded-md border border-line bg-tag">
+                    <Image
+                      src={project.preview}
+                      alt={`Screenshot of ${project.title}`}
+                      fill
+                      sizes="(min-width: 768px) 420px, 100vw"
+                      className="object-cover object-top"
+                    />
+                  </div>
+                </Card3DLayer>
 
-                <div className="mt-5 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-                  <ul className="flex flex-wrap gap-1.5" aria-label="Tech stack">
-                    {project.tech.map((tech) => (
-                      <li key={tech} className="tag">
-                        {tech}
-                      </li>
-                    ))}
-                  </ul>
-                  <span className="inline-flex flex-shrink-0 items-center gap-1 text-sm font-medium text-ink">
-                    <span className="link">{linkLabel(project.kind)}</span>
-                    <ArrowUpRight size={16} strokeWidth={1.5} aria-hidden="true" />
-                    <span className="sr-only">({t.newTab})</span>
-                  </span>
-                </div>
+                <Card3DLayer depth={24} className="pointer-events-none flex flex-1 flex-col p-5 pt-4">
+                  <div className="flex items-baseline justify-between gap-4">
+                    <h3 className="text-balance font-display text-xl font-semibold text-ink">
+                      <a
+                        href={project.link}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="pointer-events-auto relative focus-visible:outline-none"
+                      >
+                        {project.title}
+                        <span className="sr-only">({t.newTab})</span>
+                      </a>
+                    </h3>
+                    <span className="flex-shrink-0 font-mono text-sm tabular-nums text-faint">{project.year}</span>
+                  </div>
+
+                  <p className="mt-2 text-muted">{project.desc}</p>
+
+                  <div className="mt-auto flex flex-col gap-4 pt-5">
+                    <ul className="flex flex-wrap gap-1.5" aria-label="Tech stack">
+                      {project.tech.map((tech) => (
+                        <li key={tech} className="tag">
+                          {tech}
+                        </li>
+                      ))}
+                    </ul>
+                    <span aria-hidden="true" className="inline-flex items-center gap-1 text-sm font-medium text-ink">
+                      <span className="link">{linkLabel(project.kind)}</span>
+                      <ArrowUpRight size={16} strokeWidth={1.5} />
+                    </span>
+                  </div>
+                </Card3DLayer>
 
                 <span
                   aria-hidden="true"
                   className="pointer-events-none absolute -inset-1 rounded-xl border-2 border-accent opacity-0 group-focus-within:opacity-100"
                 />
-              </article>
+              </Card3D>
             </li>
           ))}
         </ul>

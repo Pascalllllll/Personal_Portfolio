@@ -98,7 +98,7 @@ Faint label, display heading with accent full stop, optional action on the right
 Two columns from `md` (3:2). Left: bio paragraphs. Right: 80px portrait (hovering it opens a 240px zoom in the same card and motion as the project previews, `components/ui/photo-zoom.tsx`; mouse only), name, CV download link, and a facts list with `--line` dividers. Below: "What I work on" as divided rows (title left, description and mono tags right) and a wrap of technology tags.
 
 ### Projects
-A vertical list of bordered cards on `--raised`. Title and year on the first line, description, then tags and a "Live site" or "Source on GitHub" link. The whole card is clickable; the border darkens on hover. Hovering or focusing the title opens a 240 x 150 preview card above it (`components/ui/link-preview.tsx`) showing the project screenshot from `public/project/*.webp`. Keyboard focus draws a 2px accent ring around the card.
+A 2-column grid of 3D cards from `md` (one column below), built on `components/ui/3d-card.tsx`. Each card on `--raised` holds the project screenshot (`public/project/*.webp`, 16:10 frame cropped from the top), then title and year, description, tech tags and a "Live site" or "Source on GitHub" label. With a mouse, the card tilts up to 6 degrees toward the pointer (spring, damping 15, stiffness 150) and its layers lift toward the viewer (screenshot 40px, text 24px) over 300ms; at rest they lie flat so the card keeps its exact size. Touch and reduced motion keep it flat. The whole card is clickable; the title link is the single keyboard stop, and focus draws a 2px accent ring around the card.
 
 ### Experience
 A timeline grouped by organisation, newest first. Each organisation has a 44px mono monogram tile, a vertical rail to the next one (fading out under the last), its name, and its roles. Current roles get a filled accent marker, finished roles a hollow ring. Dates show month and year plus a computed duration.
@@ -128,9 +128,9 @@ One motion system: ease-out curve `cubic-bezier(0.22, 1, 0.36, 1)`, 200ms for ho
 | Directional cursor | Figma-style arrow in the accent color with a white outline. Its tip is the exact click point and it rotates so the tip leads the direction of movement (70ms easing, 6px jitter threshold). Grows 18% over links and buttons. Text fields and disabled controls show the native cursor. |
 | Click burst | Each click sends 7 thin accent bars outward from the pointer, fading within about 0.6s. |
 | Fluid background | WebGL stable-fluids smoke behind the content, drifting on curl noise. Moving the mouse leaves a light trail from the back of the cursor arrow; a click adds a small push. Purple in light mode, gold in dark, capped at `#ECE7F7` / `#28231A` so text contrast holds. |
-| Link preview | 200ms fade with a 6px lift; drifts slightly toward the pointer along the title. |
 | Marker highlight | Solid accent block behind a phrase (purple light, gold dark) that springs across it (stiffness 100, damping 14, slight overshoot) when the phrase is 80% in view; the text turns dark once it is 60% covered (4.96:1 on purple, 11.26:1 on gold). Waits for the OS gate; already drawn under reduced motion. Mark a phrase in `lib/content.ts` with `[[...]]` (`components/ui/marker-highlight.tsx`). Three highlights, one per claim a reader should take away: personality ("I use Debian, btw.", hero), leadership ("Head of Event at HMTC", About), result ("160+ companies", Experience). Keep phrases short: they do not wrap. |
-| Photo zoom | Same as the link preview, over the About portrait. |
+| Photo zoom | 200ms fade with a 6px lift over the About portrait; drifts slightly toward the pointer. |
+| Project card tilt | Up to 6 degrees toward the pointer on a spring; layers lift 24 to 40px on hover. Mouse only. |
 | Music | "Misery" by Pupsies at 30% volume. Tries to start 5s after the portfolio appears (after the OS gate hands off, or 5s after load when the gate is skipped), otherwise on the first interaction; the navbar toggle always wins. The file only downloads when playback starts. |
 
 ## 7. Responsive behavior
