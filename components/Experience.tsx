@@ -1,24 +1,20 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useLang } from "@/context/LanguageContext";
-import { content, type Lang } from "@/lib/content";
+import { content } from "@/lib/content";
 import { experience, type Role } from "@/lib/experience";
 import SectionHeading from "@/components/SectionHeading";
 
-const MONTHS: Record<Lang, string[]> = {
-  en: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
-  id: ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Agu", "Sep", "Okt", "Nov", "Des"],
-};
+const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
 const parse = (ym: string) => {
   const [y, m] = ym.split("-").map(Number);
   return { y, m };
 };
 
-const formatMonth = (ym: string, lang: Lang) => {
+const formatMonth = (ym: string) => {
   const { y, m } = parse(ym);
-  return `${MONTHS[lang][m - 1]} ${y}`;
+  return `${MONTHS[m - 1]} ${y}`;
 };
 
 // Counts both end months, so Nov to Dec is 2 months.
@@ -30,7 +26,7 @@ const monthsBetween = (start: string, end: string) => {
 
 const toYm = (d: Date) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`;
 
-type Labels = (typeof content)[Lang]["experience"];
+type Labels = (typeof content)["experience"];
 
 function formatDuration(months: number, t: Labels) {
   const y = Math.floor(months / 12);
@@ -41,15 +37,15 @@ function formatDuration(months: number, t: Labels) {
   return parts.join(" ");
 }
 
-function Dates({ start, end, now, lang, t }: { start: string; end: string | null; now: string | null; lang: Lang; t: Labels }) {
+function Dates({ start, end, now, t }: { start: string; end: string | null; now: string | null; t: Labels }) {
   const until = end ?? now;
   return (
     <p className="text-sm text-faint">
-      <time dateTime={start}>{formatMonth(start, lang)}</time>
+      <time dateTime={start}>{formatMonth(start)}</time>
       {end !== start && (
         <>
           {" - "}
-          {end ? <time dateTime={end}>{formatMonth(end, lang)}</time> : t.present}
+          {end ? <time dateTime={end}>{formatMonth(end)}</time> : t.present}
         </>
       )}
       {/* Ongoing roles need today's date, which only exists on the client, so their duration appears after mount. */}
@@ -83,16 +79,15 @@ function Marker({ current }: { current: boolean }) {
 }
 
 export default function Experience() {
-  const { lang } = useLang();
-  const t = content[lang].experience;
+  const t = content.experience;
   const [now, setNow] = useState<string | null>(null);
 
   useEffect(() => setNow(toYm(new Date())), []);
 
   const roleBody = (role: Role) => (
     <>
-      <Dates start={role.start} end={role.end} now={now} lang={lang} t={t} />
-      <Details items={role.details[lang]} />
+      <Dates start={role.start} end={role.end} now={now} t={t} />
+      <Details items={role.details} />
     </>
   );
 
@@ -137,20 +132,20 @@ export default function Experience() {
                       {(newest.end ?? now) && <> · {formatDuration(monthsBetween(oldest.start, (newest.end ?? now)!), t)}</>}
                     </p>
                   ) : (
-                    <p className="font-semibold text-ink">{newest.title[lang]}</p>
+                    <p className="font-semibold text-ink">{newest.title}</p>
                   )}
-                  <p className="mt-1 text-sm text-muted">{org.about[lang]}</p>
+                  <p className="mt-1 text-sm text-muted">{org.about}</p>
                 </div>
 
                 {grouped ? (
                   <ol className="col-span-2 mt-6 grid grid-cols-subgrid gap-y-8">
                     {org.roles.map((role) => (
-                      <li key={role.start + role.title.en} data-reveal className="col-span-full grid grid-cols-subgrid">
+                      <li key={role.start + role.title} data-reveal className="col-span-full grid grid-cols-subgrid">
                         <span className="flex justify-center">
                           <Marker current={role.end === null} />
                         </span>
                         <div className="min-w-0">
-                          <h4 className="font-semibold text-ink">{role.title[lang]}</h4>
+                          <h4 className="font-semibold text-ink">{role.title}</h4>
                           {roleBody(role)}
                         </div>
                       </li>

@@ -2,14 +2,12 @@
 
 import { Download } from "lucide-react";
 import Image from "next/image";
-import { useLang } from "@/context/LanguageContext";
 import { content } from "@/lib/content";
 import SectionHeading from "@/components/SectionHeading";
 
 export default function About() {
-  const { lang } = useLang();
-  const t = content[lang].about;
-  const focus = content[lang].focus;
+  const t = content.about;
+  const focus = content.focus;
 
   return (
     <section id="about" aria-labelledby="about-title" className="section border-b border-line">

@@ -4,7 +4,6 @@ import { useState, useEffect, type MouseEvent } from "react";
 import { flushSync } from "react-dom";
 import { useTheme } from "next-themes";
 import { Home, Moon, Sun, Menu, X } from "lucide-react";
-import { useLang } from "@/context/LanguageContext";
 import { content } from "@/lib/content";
 import MusicPlayer from "@/components/MusicPlayer";
 
@@ -16,8 +15,7 @@ export default function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
   const { resolvedTheme, setTheme } = useTheme();
-  const { lang, toggleLang } = useLang();
-  const t = content[lang].nav;
+  const t = content.nav;
 
   useEffect(() => {
     setMounted(true);
@@ -83,7 +81,7 @@ export default function Navbar() {
     >
       <a
         href="#main"
-        className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-3 focus:z-50 focus:rounded-md focus:bg-purple-soft focus:px-4 focus:py-2.5 focus:text-ink"
+        className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-3 focus:z-50 focus:rounded-md focus:bg-accent-soft focus:px-4 focus:py-2.5 focus:text-ink"
       >
         {t.skip}
       </a>
@@ -113,15 +111,6 @@ export default function Navbar() {
 
         <div className="flex items-center gap-2">
           <MusicPlayer className={control} />
-
-          <button
-            type="button"
-            onClick={toggleLang}
-            className={`${control} font-mono text-xs`}
-            aria-label={t.toggleLang}
-          >
-            {lang === "en" ? "ID" : "EN"}
-          </button>
 
           <button
             type="button"

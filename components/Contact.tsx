@@ -2,7 +2,6 @@
 
 import { useRef, useState } from "react";
 import { AlertCircle, Github, Linkedin, Mail } from "lucide-react";
-import { useLang } from "@/context/LanguageContext";
 import { content } from "@/lib/content";
 import SectionHeading from "@/components/SectionHeading";
 import { CONTACT_EMAIL, LIMITS, normalize, validate, type ErrorKey, type Field } from "@/lib/contact";
@@ -24,8 +23,7 @@ const input =
   "w-full rounded-md border border-line-strong aria-[invalid=true]:border-2 aria-[invalid=true]:border-ink bg-raised px-4 py-3 text-base text-ink placeholder:text-faint transition-colors duration-200 ease-out hover:border-ink disabled:opacity-60";
 
 export default function Contact() {
-  const { lang } = useLang();
-  const t = content[lang].contact;
+  const t = content.contact;
 
   const [form, setForm] = useState({ name: "", email: "", message: "" });
   const [botcheck, setBotcheck] = useState(false);

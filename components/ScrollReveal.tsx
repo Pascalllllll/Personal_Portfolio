@@ -26,25 +26,9 @@ export default function ScrollReveal() {
       { rootMargin: "-8% 0px -8% 0px" },
     );
 
-    const observe = (root: ParentNode) => root.querySelectorAll<HTMLElement>("[data-reveal]").forEach((el) => io.observe(el));
-    observe(document);
+    document.querySelectorAll<HTMLElement>("[data-reveal]").forEach((el) => io.observe(el));
 
-    // Switching language remounts some elements, so pick up any new ones.
-    const mo = new MutationObserver((records) => {
-      for (const r of records) {
-        r.addedNodes.forEach((node) => {
-          if (!(node instanceof HTMLElement)) return;
-          if (node.matches("[data-reveal]")) io.observe(node);
-          observe(node);
-        });
-      }
-    });
-    mo.observe(document.body, { childList: true, subtree: true });
-
-    return () => {
-      io.disconnect();
-      mo.disconnect();
-    };
+    return () => io.disconnect();
   }, []);
 
   return null;

@@ -71,7 +71,7 @@ body {
 }
 
 :focus-visible {
-  outline: 2px solid var(--purple);
+  outline: 2px solid var(--accent);
   outline-offset: 3px;
   border-radius: 4px;
 }
@@ -164,6 +164,50 @@ body {
   border-radius: 1px;
   background: var(--burst);
   transform-origin: 0 50%;
+}
+
+/* Directional cursor: same color as the click burst so both pointer effects read as one gesture.
+   The white outline and small shadow keep the arrow legible over light paper and busy backgrounds. */
+html.custom-cursor,
+html.custom-cursor * {
+  cursor: none !important;
+}
+html.custom-cursor :is(textarea, [contenteditable=""], [contenteditable="true"]),
+html.custom-cursor
+  input:not([type="button"], [type="submit"], [type="reset"], [type="checkbox"], [type="radio"], [type="range"], [type="color"], [type="file"]) {
+  cursor: text !important;
+}
+html.custom-cursor :disabled {
+  cursor: not-allowed !important;
+}
+.directional-cursor {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 70;
+  pointer-events: none;
+  transform-origin: 2px 2px;
+  opacity: 0;
+  will-change: transform;
+}
+.directional-cursor[data-visible]:not([data-native="true"]) {
+  opacity: 1;
+}
+.directional-cursor svg {
+  display: block;
+  overflow: visible;
+  transform-origin: 2px 2px;
+  transition: transform 200ms cubic-bezier(0.22, 1, 0.36, 1);
+  filter: drop-shadow(0 1px 1.5px rgb(0 0 0 / 0.28));
+}
+.directional-cursor[data-hover="true"] svg {
+  transform: scale(1.18);
+}
+.directional-cursor path {
+  fill: var(--burst);
+  stroke: #ffffff;
+  stroke-width: 1.5;
+  stroke-linejoin: round;
 }
 
 /* The one translucent surface: the scrolled navbar keeps page context visible. */

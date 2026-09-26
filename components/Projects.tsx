@@ -1,13 +1,12 @@
 "use client";
 
 import { ArrowUpRight, Github } from "lucide-react";
-import { useLang } from "@/context/LanguageContext";
 import { content } from "@/lib/content";
 import SectionHeading from "@/components/SectionHeading";
+import { LinkPreview } from "@/components/ui/link-preview";
 
 export default function Projects() {
-  const { lang } = useLang();
-  const t = content[lang].projects;
+  const t = content.projects;
   const linkLabel = (kind: string) => (kind === "live" ? t.live : t.code);
 
   return (
@@ -30,17 +29,27 @@ export default function Projects() {
           {t.items.map((project) => (
             <li key={project.title} data-reveal>
               <article className="group relative rounded-lg border border-line bg-raised p-5 transition-colors duration-200 ease-out hover:border-line-strong md:p-6">
+                {/* Makes the whole card clickable. Kept apart from the title so only the title opens the preview;
+                    it duplicates the title link, so it stays out of the tab order and the accessibility tree. */}
+                <a
+                  href={project.link}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  tabIndex={-1}
+                  aria-hidden="true"
+                  className="absolute inset-0 rounded-lg"
+                />
                 <div className="flex items-baseline justify-between gap-4">
                   <h3 className="font-display text-xl font-medium text-ink">
-                    {/* The ::after overlay makes the whole card the click target. */}
-                    <a
-                      href={project.link}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="after:absolute after:inset-0 after:content-[''] focus-visible:outline-none"
+                    <LinkPreview
+                      url={project.link}
+                      external
+                      isStatic
+                      imageSrc={project.preview}
+                      className="relative z-10 focus-visible:outline-none"
                     >
                       {project.title}
-                    </a>
+                    </LinkPreview>
                   </h3>
                   <span className="flex-shrink-0 font-mono text-sm text-faint">{project.year}</span>
                 </div>
@@ -62,10 +71,10 @@ export default function Projects() {
                   </span>
                 </div>
 
-                {/* Focus ring on the card, since the focused element is the invisible overlay. */}
+                {/* Focus ring on the card, drawn when the title link has keyboard focus. */}
                 <span
                   aria-hidden="true"
-                  className="pointer-events-none absolute -inset-1 rounded-xl border-2 border-purple opacity-0 group-focus-within:opacity-100"
+                  className="pointer-events-none absolute -inset-1 rounded-xl border-2 border-accent opacity-0 group-focus-within:opacity-100"
                 />
               </article>
             </li>

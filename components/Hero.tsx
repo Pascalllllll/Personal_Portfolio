@@ -1,12 +1,10 @@
 "use client";
 
-import { useLang } from "@/context/LanguageContext";
 import { content } from "@/lib/content";
 import TypingName from "@/components/TypingName";
 
 export default function Hero() {
-  const { lang } = useLang();
-  const t = content[lang].hero;
+  const t = content.hero;
 
   return (
     <section id="hero" className="border-b border-line">

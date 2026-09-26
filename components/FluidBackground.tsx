@@ -15,6 +15,9 @@ const TIERS: Record<"desktop" | "tablet" | "mobile", Tier> = {
   mobile: { sim: 64, dye: 256, iterations: 8, interaction: 0, fps: 30 },
 };
 
+// Distance in px from the DirectionalCursor arrow's tip back to its tail.
+const CURSOR_TAIL = 16;
+
 // One hue per theme: purple smoke in light mode, gold in dark. These are the strongest tints the
 // fluid may reach; tertiary text keeps AA over them (4.74:1 light, 4.52:1 dark).
 const THEMES = {
@@ -497,12 +500,17 @@ export default function FluidBackground() {
           splat(dye, x, y, [0, 0.1, 0], 0.0009);
           continue;
         }
+        // The cursor arrow's tip leads the motion, so its tail sits behind the pointer along the heading.
+        // Injecting there makes the smoke trail off the back of the arrow instead of welling up under the tip.
+        const tail = ev.speed > 0 && document.documentElement.classList.contains("custom-cursor") ? CURSOR_TAIL / ev.speed : 0;
+        const bx = (ev.x - ev.dx * tail) / w;
+        const by = 1 - (ev.y - ev.dy * tail) / h;
         // Faster pointer: faster local flow, wider reach, and a stronger wake per pixel travelled.
         const k = Math.min(ev.speed / 1500, 1);
         const drag = 0.85 * tier.interaction;
-        splat(velocity, x, y, [ev.dx * toSim, -ev.dy * toSim, 0], 0.0006 + 0.0022 * k, false, drag);
-        const wake = Math.min(ev.travel / 30, 1) * (0.03 + 0.5 * k) * tier.interaction;
-        splat(dye, x, y, [wake, 0, 0], 0.0003 + 0.0012 * k);
+        splat(velocity, bx, by, [ev.dx * toSim, -ev.dy * toSim, 0], 0.0006 + 0.0022 * k, false, drag);
+        const wake = Math.min(ev.travel / 30, 1) * (0.02 + 0.36 * k) * tier.interaction;
+        splat(dye, bx, by, [wake, 0, 0], 0.0003 + 0.0012 * k);
       }
     };
 

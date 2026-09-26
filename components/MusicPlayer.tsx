@@ -2,7 +2,6 @@
 
 import { useEffect, useRef, useState } from "react";
 import { Disc3 } from "lucide-react";
-import { useLang } from "@/context/LanguageContext";
 import { content } from "@/lib/content";
 
 const SRC = "/music/misery.mp3";
@@ -14,7 +13,7 @@ export default function MusicPlayer({ className }: { className: string }) {
   // Set once playback has started or the visitor has used the button, so autoplay never overrides them.
   const settledRef = useRef(false);
   const [playing, setPlaying] = useState(false);
-  const t = content[useLang().lang].nav;
+  const t = content.nav;
 
   // Keep the icon in sync if playback stops on its own, e.g. the file fails to load.
   useEffect(() => {
