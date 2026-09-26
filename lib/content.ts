@@ -35,7 +35,8 @@ export const content = {
       { label: "GPA", value: "3.77", note: "(4.00 on last semester :v)" },
     ],
     skillsLabel: "Technologies",
-    skills: ["Python", "pandas", "PostgreSQL", "MySQL", "TypeScript", "Next.js", "Git", "Debian", "GNOME", "fish", "Starship"],
+    // Programming and web first, then data, then Linux ricing.
+    skills: ["Python", "Java", "TypeScript", "React", "Next.js", "Tailwind CSS", "Git", "pandas", "PostgreSQL", "MySQL", "Debian", "GNOME"],
     cv: "Download CV (PDF)",
     photoAlt: "Portrait of Hosea Felix Sanjaya",
   },
@@ -72,6 +73,8 @@ export const content = {
     live: "Live site",
     code: "Source on GitHub",
     newTab: "opens in a new tab",
+    viewMore: "View more",
+    moreMessage: "Trust me, I have more…",
     items: [
       {
         title: "Wordle Solver",
@@ -154,8 +157,5 @@ export const content = {
     errEmailEmpty: "Please enter your email address.",
     errEmailInvalid: "That email address doesn't look complete, for example name@example.com.",
     errMessage: "Please write a message.",
-  },
-  footer: {
-    affiliation: "Department of Informatics, Institut Teknologi Sepuluh Nopember.",
   },
 } as const;

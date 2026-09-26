@@ -28,8 +28,8 @@ const MESSAGES: Partial<Record<Phase, string>> = {
 };
 
 // Trailing punctuation takes the accent, like the section heading full stops.
-function Accented({ text }: { text: string }) {
-  const [, body, mark] = text.match(/^(.*?)([.?]*)$/) ?? [, text, ""];
+export function Accented({ text }: { text: string }) {
+  const [, body, mark] = text.match(/^(.*?)([.?…]*)$/) ?? [, text, ""];
   return (
     <>
       {body}

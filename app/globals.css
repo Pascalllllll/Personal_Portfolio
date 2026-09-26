@@ -3,9 +3,10 @@
 @tailwind utilities;
 
 :root {
-  --paper: #fafafa;
-  --raised: #ffffff;
-  --line: #e5e5e5;
+  /* Warm, slightly dimmed off-white: about 6% less glare than #fafafa. */
+  --paper: #f4f3f0;
+  --raised: #fbfaf8;
+  --line: #e2e0db;
   --line-strong: #737373;
   --ink: #171717;
   --muted: #525252;
@@ -14,7 +15,7 @@
   --purple-soft: #e6dff5;
   --purple-soft-hover: #d9cef0;
   --gold: #c8a64e;
-  --tag-bg: #f5f5f5;
+  --tag-bg: #eae8e3;
   --tag-ink: #404040;
   --burst: var(--purple);
   --accent: var(--purple);
@@ -22,8 +23,6 @@
   --accent-soft-hover: var(--purple-soft-hover);
   --accent-border: var(--purple);
   --selection: var(--purple-soft-hover);
-  --scrollbar: #c7c7c7;
-  --scrollbar-hover: #a3a3a3;
   color-scheme: light;
 }
 
@@ -47,8 +46,6 @@
   --accent-soft-hover: #3b321c;
   --accent-border: #726642;
   --selection: #4a3f22;
-  --scrollbar: #3a3a3a;
-  --scrollbar-hover: #555555;
   color-scheme: dark;
 }
 
@@ -77,26 +74,12 @@ html {
   scroll-padding-top: 80px;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  scrollbar-width: thin;
-  scrollbar-color: var(--scrollbar) transparent;
+  scrollbar-width: none;
 }
 
-@supports not (scrollbar-color: auto) {
-  ::-webkit-scrollbar {
-    width: 10px;
-    height: 10px;
-  }
-  ::-webkit-scrollbar-track {
-    background: transparent;
-  }
-  ::-webkit-scrollbar-thumb {
-    background: var(--scrollbar);
-    border: 3px solid var(--paper);
-    border-radius: 999px;
-  }
-  ::-webkit-scrollbar-thumb:hover {
-    background: var(--scrollbar-hover);
-  }
+/* No visible page scrollbar (it still scrolls with wheel, touch and keyboard); the message box keeps its own. */
+html::-webkit-scrollbar {
+  display: none;
 }
 
 body {
@@ -292,14 +275,29 @@ html.custom-cursor :disabled {
 }
 
 /* OS gate: the portfolio stays rendered underneath, hidden (and out of the tab order) until the gate hands off. */
-html.gate-open {
+/* "View more" uses the same hiding (html.more-open), so the scroll position is kept underneath. */
+html.gate-open,
+html.more-open {
   overflow: hidden;
 }
+/* Becomes visible instantly (so focus can return to it), but stays visible until the fade-out ends. */
 .os-gated {
-  transition: opacity 600ms cubic-bezier(0.22, 1, 0.36, 1);
+  transition:
+    opacity 600ms cubic-bezier(0.22, 1, 0.36, 1),
+    visibility 0s;
 }
-html.gate-open .os-gated {
+html.gate-open .os-gated,
+html.more-open .os-gated {
   visibility: hidden;
+  opacity: 0;
+  transition:
+    opacity 600ms cubic-bezier(0.22, 1, 0.36, 1),
+    visibility 0s 600ms;
+}
+.more-screen {
+  transition: opacity 500ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+.more-screen[data-leaving] {
   opacity: 0;
 }
 html:not(.gate-open) .os-gate:not([data-leaving]) {

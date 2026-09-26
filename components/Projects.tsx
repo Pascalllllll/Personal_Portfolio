@@ -5,6 +5,7 @@ import { ArrowUpRight, Github } from "lucide-react";
 import { content } from "@/lib/content";
 import SectionHeading from "@/components/SectionHeading";
 import { Card3D, Card3DLayer } from "@/components/ui/3d-card";
+import ViewMore from "@/components/ViewMore";
 
 export default function Projects() {
   const t = content.projects;
@@ -94,6 +95,8 @@ export default function Projects() {
             </li>
           ))}
         </ul>
+
+        <ViewMore label={t.viewMore} message={t.moreMessage} />
       </div>
     </section>
   );

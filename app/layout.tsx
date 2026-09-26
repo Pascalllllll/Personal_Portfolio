@@ -50,7 +50,7 @@ export const metadata: Metadata = {
 // Browser chrome (mobile address bar) matches the page background in each theme.
 export const viewport: Viewport = {
   themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#fafafa" },
+    { media: "(prefers-color-scheme: light)", color: "#f4f3f0" },
     { media: "(prefers-color-scheme: dark)", color: "#0a0a0a" },
   ],
 };

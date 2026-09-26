@@ -5,6 +5,7 @@ import Image from "next/image";
 import { content } from "@/lib/content";
 import { Marked } from "@/components/ui/marker-highlight";
 import SectionHeading from "@/components/SectionHeading";
+import { techIcons } from "@/lib/tech-icons";
 import { PhotoZoom } from "@/components/ui/photo-zoom";
 
 export default function About() {
@@ -74,10 +75,17 @@ export default function About() {
 
         <div data-reveal>
           <h3 className="mt-10 text-sm text-faint">{t.skillsLabel}</h3>
-          <ul className="mt-3 flex flex-wrap gap-1.5">
+          <ul className="mt-3 flex flex-wrap gap-2">
             {t.skills.map((skill) => (
-              <li key={skill} className="tag">
-                {skill}
+              <li
+                key={skill}
+                title={skill}
+                className="flex h-11 w-11 items-center justify-center rounded-md bg-tag text-tag-ink"
+              >
+                <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor" aria-hidden="true">
+                  <path d={techIcons[skill]} />
+                </svg>
+                <span className="sr-only">{skill}</span>
               </li>
             ))}
           </ul>

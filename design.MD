@@ -41,15 +41,14 @@ All colors are CSS variables in `app/globals.css`, exposed to Tailwind in `tailw
 
 | Token | Light | Dark | Use |
 |---|---|---|---|
-| `--paper` | `#FAFAFA` | `#0A0A0A` | Page background |
-| `--raised` | `#FFFFFF` | `#121212` | Cards, inputs, preview card |
-| `--line` | `#E5E5E5` | `#262626` | Dividers, card borders |
+| `--paper` | `#F4F3F0` | `#0A0A0A` | Page background (light is a warm, slightly dimmed off-white to cut glare) |
+| `--raised` | `#FBFAF8` | `#121212` | Cards, inputs, preview card |
+| `--line` | `#E2E0DB` | `#262626` | Dividers, card borders |
 | `--line-strong` | `#737373` | `#666666` | Input borders, card hover border |
 | `--ink` | `#171717` | `#F5F5F5` | Primary text |
 | `--muted` | `#525252` | `#A3A3A3` | Secondary text |
 | `--faint` | `#666666` | `#8A8A8A` | Labels, metadata |
-| `--tag-bg` / `--tag-ink` | `#F5F5F5` / `#404040` | `#262626` / `#D4D4D4` | Tags |
-| `--scrollbar` / `--scrollbar-hover` | `#C7C7C7` / `#A3A3A3` | `#3A3A3A` / `#555555` | Scrollbar thumb |
+| `--tag-bg` / `--tag-ink` | `#EAE8E3` / `#404040` | `#262626` / `#D4D4D4` | Tags |
 
 ### Accent
 
@@ -68,7 +67,7 @@ The accent appears on: button fill and border, link underlines, the heading full
 ### Contrast
 
 - All text meets WCAG AA (4.5:1) on `--paper`, `--raised` and over the strongest fluid tint.
-- Faint text: 5.50:1 light, 5.73:1 dark on the flat background; 4.74:1 and 4.52:1 over the fluid.
+- Faint text: 5.17:1 light, 5.73:1 dark on the flat background; 4.69:1 and 4.52:1 over the fluid.
 - Faint text is never dimmed further with opacity (the GPA note once sat at 1.8:1 that way).
 - Input borders meet the 3:1 non-text minimum in both themes.
 
@@ -95,10 +94,12 @@ Left-aligned. The name types out and cycles through the phrases in `lib/content.
 Faint label, display heading with accent full stop, optional action on the right (the GitHub link in Projects).
 
 ### About
-Two columns from `md` (3:2). Left: bio paragraphs. Right: 80px portrait (hovering it opens a 240px zoom in the same card and motion as the project previews, `components/ui/photo-zoom.tsx`; mouse only), name, CV download link, and a facts list with `--line` dividers. Below: "What I work on" as divided rows (title left, description and mono tags right) and a wrap of technology tags.
+Two columns from `md` (3:2). Left: bio paragraphs. Right: 80px portrait (hovering it opens a 240px zoom in the same card and motion as the project previews, `components/ui/photo-zoom.tsx`; mouse only), name, CV download link, and a facts list with `--line` dividers. Below: "What I work on" as divided rows (title left, description and mono tags right) and a wrap of technology logos: 44px tiles on `--tag-bg` with a 22px monochrome logo in `--tag-ink`, so both follow the theme (including the circular theme switch). Each tile carries its name as a tooltip and screen-reader text; the logos come from Simple Icons 16.32.0 (CC0), copied into `lib/tech-icons.ts`. Order: programming and web (Python, Java, TypeScript, React, Next.js, Tailwind CSS, Git), then data (pandas, PostgreSQL, MySQL), then Linux ricing (Debian, GNOME). The Java coffee cup comes from Simple Icons 6.23.0, the last release that included it.
 
 ### Projects
 A 2-column grid of 3D cards from `md` (one column below), built on `components/ui/3d-card.tsx`. Each card on `--raised` holds the project screenshot (`public/project/*.webp`, 16:10 frame cropped from the top), then title and year, description, tech tags and a "Live site" or "Source on GitHub" label. With a mouse, the card tilts up to 6 degrees toward the pointer (spring, damping 15, stiffness 150) and its layers lift toward the viewer (screenshot 40px, text 24px) over 300ms; at rest they lie flat so the card keeps its exact size. Touch and reduced motion keep it flat. The whole card is clickable; the title link is the single keyboard stop, and focus draws a 2px accent ring around the card.
+
+Below the grid, a centred "View more" outline button fades the portfolio out and shows "Trust me, I have more…" (display 600, accent ellipsis) for 2s over the live background, then fades the portfolio back in (`components/ViewMore.tsx`). Nothing navigates or scrolls, so the visitor returns to the same spot, the music keeps playing, and focus goes back to the button. Escape returns early.
 
 ### Experience
 A timeline grouped by organisation, newest first. Each organisation has a 44px mono monogram tile, a vertical rail to the next one (fading out under the last), its name, and its roles. Current roles get a filled accent marker, finished roles a hollow ring. Dates show month and year plus a computed duration.
@@ -107,7 +108,7 @@ A timeline grouped by organisation, newest first. Each organisation has a 44px m
 Two columns from `md` (2:3). Left: intro text and a divided list of GitHub, LinkedIn and email links. Right: the form (name, email, message) with inline validation. Sending goes to Web3Forms from the browser. States: idle, sending, success card, and an error card whose message names the cause (connection, too many messages, or a server problem) and always offers the email address.
 
 ### Footer
-One line: `© <year> Hosea Felix Sanjaya, Department of Informatics, Institut Teknologi Sepuluh Nopember.`
+One line: `© <year> Hosea Felix Sanjaya`
 
 ### Shared pieces
 - `.btn-primary`: accent-soft fill, accent border, ink text, 44px tall.
@@ -115,7 +116,8 @@ One line: `© <year> Hosea Felix Sanjaya, Department of Informatics, Institut Te
 - `.link`: ink text with a 1px accent underline that thickens to 2px on hover.
 - `.tag`: mono 12px on `--tag-bg`, 4px radius.
 - Icons: Lucide at stroke width 1.5, functional only.
-- Scrollbar: thin, neutral thumb on a transparent track, following the theme. Kept visible on purpose as the page's position cue; Safari gets a 10px rounded thumb inset from the edge.
+- Brand logos (Technologies only): Simple Icons paths in `lib/tech-icons.ts`, filled with `currentColor`.
+- Scrollbar: hidden on the page (it still scrolls with wheel, touch and keyboard); the contact message box keeps its own.
 
 ## 6. Motion
 
@@ -127,7 +129,7 @@ One motion system: ease-out curve `cubic-bezier(0.22, 1, 0.36, 1)`, 200ms for ho
 | Theme switch | The new theme grows as a circle from the toggle (View Transitions API, 650ms). |
 | Directional cursor | Figma-style arrow in the accent color with a white outline. Its tip is the exact click point and it rotates so the tip leads the direction of movement (70ms easing, 6px jitter threshold). Grows 18% over links and buttons. Text fields and disabled controls show the native cursor. |
 | Click burst | Each click sends 7 thin accent bars outward from the pointer, fading within about 0.6s. |
-| Fluid background | WebGL stable-fluids smoke behind the content, drifting on curl noise. Moving the mouse leaves a light trail from the back of the cursor arrow; a click adds a small push. Purple in light mode, gold in dark, capped at `#ECE7F7` / `#28231A` so text contrast holds. |
+| Fluid background | WebGL stable-fluids smoke behind the content, drifting on curl noise. Moving the mouse leaves a light trail from the back of the cursor arrow; a click adds a small push. Purple in light mode, gold in dark, capped at `#EBE6F4` / `#28231A` so text contrast holds. |
 | Marker highlight | Solid accent block behind a phrase (purple light, gold dark) that springs across it (stiffness 100, damping 14, slight overshoot) when the phrase is 80% in view; the text turns dark once it is 60% covered (4.96:1 on purple, 11.26:1 on gold). Waits for the OS gate; already drawn under reduced motion. Mark a phrase in `lib/content.ts` with `[[...]]` (`components/ui/marker-highlight.tsx`). Three highlights, one per claim a reader should take away: personality ("I use Debian, btw.", hero), leadership ("Head of Event at HMTC", About), result ("160+ companies", Experience). Keep phrases short: they do not wrap. |
 | Photo zoom | 200ms fade with a 6px lift over the About portrait; drifts slightly toward the pointer. |
 | Project card tilt | Up to 6 degrees toward the pointer on a spring; layers lift 24 to 40px on hover. Mouse only. |

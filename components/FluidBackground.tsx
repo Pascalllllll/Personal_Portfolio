@@ -13,7 +13,7 @@ const TIERS: Record<"desktop" | "tablet" | "mobile", Tier> = {
 const CURSOR_TAIL = 16;
 
 const THEMES = {
-  light: { paper: "#fafafa", a: "#ece7f7", b: "#ece7f7", lift: 1 },
+  light: { paper: "#f4f3f0", a: "#ebe6f4", b: "#ebe6f4", lift: 1 },
   dark: { paper: "#0a0a0a", a: "#28231a", b: "#28231a", lift: 0.87 },
 };
 
