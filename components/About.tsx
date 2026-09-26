@@ -4,6 +4,7 @@ import { Download } from "lucide-react";
 import Image from "next/image";
 import { content } from "@/lib/content";
 import SectionHeading from "@/components/SectionHeading";
+import { PhotoZoom } from "@/components/ui/photo-zoom";
 
 export default function About() {
   const t = content.about;
@@ -23,9 +24,9 @@ export default function About() {
 
           <aside data-reveal style={{ "--reveal-delay": "120ms" } as React.CSSProperties} className="flex flex-col gap-6">
             <div className="flex items-center gap-4">
-              <div className="relative h-20 w-20 flex-shrink-0 overflow-hidden rounded-lg">
+              <PhotoZoom src="/foto-profil.jpg" className="relative h-20 w-20 flex-shrink-0 overflow-hidden rounded-lg">
                 <Image src="/foto-profil.jpg" alt={t.photoAlt} fill sizes="80px" className="object-cover" />
-              </div>
+              </PhotoZoom>
               <div>
                 <p className="font-display text-lg font-semibold text-ink">Hosea Felix Sanjaya</p>
                 <a
