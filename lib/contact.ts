@@ -1,7 +1,11 @@
-// Shared by the contact form and /api/contact so both sides apply identical rules.
+// Validation and addresses for the contact form.
 
 // The address published on the site; also the default inbox for form submissions.
 export const CONTACT_EMAIL = "hoseeee777@gmail.com";
+
+// Web3Forms access key. Not a secret: it can only deliver messages to the inbox it was issued for.
+// TODO: paste the key Web3Forms emailed to hoseeee777@gmail.com. Until then the form shows its error message.
+export const WEB3FORMS_KEY = "";
 
 export const LIMITS = { name: 200, email: 254, message: 5000 } as const;
 

@@ -4,7 +4,7 @@ import { useRef, useState } from "react";
 import { AlertCircle, Github, Linkedin, Mail } from "lucide-react";
 import { content } from "@/lib/content";
 import SectionHeading from "@/components/SectionHeading";
-import { CONTACT_EMAIL, LIMITS, normalize, validate, type ErrorKey, type Field } from "@/lib/contact";
+import { CONTACT_EMAIL, LIMITS, WEB3FORMS_KEY, normalize, validate, type ErrorKey, type Field } from "@/lib/contact";
 
 const EMAIL = CONTACT_EMAIL;
 
@@ -53,29 +53,33 @@ export default function Contact() {
 
     inFlight.current = true;
     setStatus("sending");
+    const input = normalize(form);
 
     try {
-      const response = await fetch("/api/contact", {
+      // Web3Forms emails the submission to the inbox tied to the access key. Its free plan only accepts browser requests.
+      const response = await fetch("https://api.web3forms.com/submit", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...normalize(form), botcheck }),
+        headers: { "Content-Type": "application/json", Accept: "application/json" },
+        body: JSON.stringify({
+          access_key: WEB3FORMS_KEY,
+          subject: `Portfolio Contact from: ${input.name}`,
+          from_name: "Hosea Felix Portfolio",
+          ...input,
+          botcheck,
+        }),
       });
       const result = await response.json().catch(() => null);
 
-      if (response.ok && result?.ok) {
+      if (response.ok && result?.success) {
         setStatus("success");
         setForm({ name: "", email: "", message: "" });
-      } else if (response.status === 400 && result?.fields) {
-        // The server rejected a field the browser let through; show it on that field.
-        setErrors(result.fields);
-        setStatus("idle");
       } else {
-        console.error("Contact form error:", response.status, result?.error);
+        console.warn("Contact form error:", response.status, result?.message);
         setErrorBody(response.status === 429 ? t.errorBusy : t.errorServer);
         setStatus("error");
       }
     } catch (error) {
-      console.error("Contact form network error:", error);
+      console.warn("Contact form network error:", error);
       setErrorBody(t.errorNetwork);
       setStatus("error");
     } finally {
