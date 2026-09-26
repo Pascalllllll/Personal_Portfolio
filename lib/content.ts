@@ -36,7 +36,7 @@ export const content = {
     ],
     skillsLabel: "Technologies",
     // Programming and web first, then data, then Linux ricing.
-    skills: ["Python", "Java", "TypeScript", "React", "Next.js", "Tailwind CSS", "Git", "pandas", "PostgreSQL", "MySQL", "Debian", "GNOME"],
+    skills: ["Python", "Java", "TypeScript", "React", "Next.js", "Tailwind CSS", "Git", "Docker", "pandas", "Jupyter", "scikit-learn", "PostgreSQL", "MySQL", "Debian", "GNOME"],
     cv: "Download CV (PDF)",
     photoAlt: "Portrait of Hosea Felix Sanjaya",
   },
