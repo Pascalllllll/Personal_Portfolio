@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { content } from "@/lib/content";
 import { experience, type Role } from "@/lib/experience";
 import SectionHeading from "@/components/SectionHeading";
+import { Marked } from "@/components/ui/marker-highlight";
 
 // Fixed locale and UTC so the server and the browser render the same string.
 const monthFormat = new Intl.DateTimeFormat("en", { month: "short", year: "numeric", timeZone: "UTC" });
@@ -58,7 +59,7 @@ function Details({ items }: { items: string[] }) {
     <ul className="mt-3 space-y-1.5 text-muted">
       {items.map((item) => (
         <li key={item} className="relative pl-4 before:absolute before:left-0 before:top-[0.7em] before:h-px before:w-2 before:bg-line-strong">
-          {item}
+          <Marked text={item} />
         </li>
       ))}
     </ul>

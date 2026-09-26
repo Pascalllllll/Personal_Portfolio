@@ -160,6 +160,20 @@ html {
   @apply rounded bg-tag px-2 py-0.5 font-mono text-xs text-tag-ink;
 }
 
+/* MarkerHighlight: solid accent block; text over it turns dark (4.96:1 on purple, 11.26:1 on gold). */
+.marker-highlight {
+  background: var(--accent);
+}
+.marker-highlight-text {
+  transition: color 150ms ease-out;
+}
+.marker-highlight-text[data-covered] {
+  color: #171717;
+}
+.dark .marker-highlight-text[data-covered] {
+  color: #0a0a0a;
+}
+
 .caret {
   display: inline-block;
   width: 0.06em;

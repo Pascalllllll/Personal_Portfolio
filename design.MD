@@ -129,6 +129,7 @@ One motion system: ease-out curve `cubic-bezier(0.22, 1, 0.36, 1)`, 200ms for ho
 | Click burst | Each click sends 7 thin accent bars outward from the pointer, fading within about 0.6s. |
 | Fluid background | WebGL stable-fluids smoke behind the content, drifting on curl noise. Moving the mouse leaves a light trail from the back of the cursor arrow; a click adds a small push. Purple in light mode, gold in dark, capped at `#ECE7F7` / `#28231A` so text contrast holds. |
 | Link preview | 200ms fade with a 6px lift; drifts slightly toward the pointer along the title. |
+| Marker highlight | Solid accent block behind a phrase (purple light, gold dark) that springs across it (stiffness 100, damping 14, slight overshoot) when the phrase is 80% in view; the text turns dark once it is 60% covered (4.96:1 on purple, 11.26:1 on gold). Waits for the OS gate; already drawn under reduced motion. Mark a phrase in `lib/content.ts` with `[[...]]` (`components/ui/marker-highlight.tsx`). Three highlights, one per claim a reader should take away: personality ("I use Debian, btw.", hero), leadership ("Head of Event at HMTC", About), result ("160+ companies", Experience). Keep phrases short: they do not wrap. |
 | Photo zoom | Same as the link preview, over the About portrait. |
 | Music | "Misery" by Pupsies at 30% volume. Tries to start 5s after the portfolio appears (after the OS gate hands off, or 5s after load when the gate is skipped), otherwise on the first interaction; the navbar toggle always wins. The file only downloads when playback starts. |
 

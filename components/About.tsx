@@ -3,6 +3,7 @@
 import { Download } from "lucide-react";
 import Image from "next/image";
 import { content } from "@/lib/content";
+import { Marked } from "@/components/ui/marker-highlight";
 import SectionHeading from "@/components/SectionHeading";
 import { PhotoZoom } from "@/components/ui/photo-zoom";
 
@@ -19,7 +20,7 @@ export default function About() {
           <div data-reveal className="space-y-4 text-muted">
             <p>{t.p1}</p>
             <p>{t.p2}</p>
-            <p>{t.p3}</p>
+            <p><Marked text={t.p3} /></p>
           </div>
 
           <aside data-reveal style={{ "--reveal-delay": "120ms" } as React.CSSProperties} className="flex flex-col gap-6">

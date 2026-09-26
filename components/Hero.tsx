@@ -1,5 +1,6 @@
 "use client";
 
+import { Marked } from "@/components/ui/marker-highlight";
 import { content } from "@/lib/content";
 import TypingName from "@/components/TypingName";
 
@@ -14,7 +15,7 @@ export default function Hero() {
         </h1>
 
         <p data-reveal style={{ "--reveal-delay": "100ms" } as React.CSSProperties} className="mt-6 text-xl font-medium text-ink md:text-2xl">{t.role}</p>
-        <p data-reveal style={{ "--reveal-delay": "200ms" } as React.CSSProperties} className="mt-3 max-w-2xl text-muted md:text-lg">{t.description}</p>
+        <p data-reveal style={{ "--reveal-delay": "200ms" } as React.CSSProperties} className="mt-3 max-w-2xl text-muted md:text-lg"><Marked text={t.description} delay={0.9} /></p>
 
         <div data-reveal style={{ "--reveal-delay": "300ms" } as React.CSSProperties} className="mt-10 flex flex-col gap-3 sm:flex-row">
           <a href="#projects" className="btn-primary">

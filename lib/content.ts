@@ -18,7 +18,7 @@ export const content = {
     typing: ["Part-time gamer.", "I use Debian :v", "Unemployee.."],
     role: "Informatics Engineering student at ITS Surabaya.",
     description:
-      "I turn raw data into something people can act on, then spend the evening theming my desktop. I use Debian, btw.",
+      "I turn raw data into something people can act on, then spend the evening theming my desktop. [[I use Debian, btw.]]",
     cta: "See my projects",
     ctaSecondary: "Send me a message",
   },
@@ -27,7 +27,7 @@ export const content = {
     title: "Data in the day, dotfiles at night",
     p1: "I'm an Informatics Engineering student at ITS Surabaya. The work I enjoy most starts with a messy dataset and ends with a table or chart someone can make a decision from.",
     p2: "Cleaning data and ricing a Linux desktop scratch the same itch for me: I keep adjusting small things until nothing looks off. The difference is that nobody asks to see my fish config.",
-    p3: "Outside class I'm Head of Event at HMTC, my student association. I plan campus tournaments and manage the team, then catch up on code late at night.",
+    p3: "Outside class I'm [[Head of Event at HMTC]], my student association. I plan campus tournaments and manage the team, then catch up on code late at night.",
     facts: [
       { label: "Studying", value: "Informatics Engineering, ITS" },
       { label: "Role", value: "Head of Event, HMTC" },

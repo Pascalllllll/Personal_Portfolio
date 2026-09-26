@@ -29,7 +29,7 @@ export const experience: Organization[] = [
         start: "2025-03",
         end: "2025-12",
         details: [
-          "Pitched Schematics 2025 to 160+ companies and negotiated the deals.",
+          "Pitched Schematics 2025 to [[160+ companies]] and negotiated the deals.",
           "Delivered the promised branding to 10+ sponsors.",
         ],
       },
