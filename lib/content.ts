@@ -145,7 +145,10 @@ export const content = {
     success: "Message sent. I'll reply to the email address you gave.",
     sendAnother: "Send another message",
     errorTitle: "Your message didn't send.",
-    errorBody: "Check your connection and try again, or email me directly at",
+    // One message per cause, so a server problem is never blamed on the visitor's connection.
+    errorNetwork: "The form couldn't reach the server. Check your connection and try again, or email me directly at",
+    errorBusy: "Several messages were sent in a short time. Wait a few minutes and try again, or email me directly at",
+    errorServer: "The form isn't working on my side right now, so your message wasn't sent. Please email me directly at",
     retry: "Back to the form",
     orReach: "Or reach me directly",
     errName: "Please enter your name.",

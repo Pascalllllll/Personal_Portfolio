@@ -29,6 +29,7 @@ export default function Contact() {
   const [botcheck, setBotcheck] = useState(false);
   const [errors, setErrors] = useState<Partial<Record<Field, ErrorKey>>>({});
   const [status, setStatus] = useState<"idle" | "sending" | "success" | "error">("idle");
+  const [errorBody, setErrorBody] = useState<string>(t.errorServer);
   const inFlight = useRef(false);
 
   const update = (field: Field, value: string) => {
@@ -70,10 +71,12 @@ export default function Contact() {
         setStatus("idle");
       } else {
         console.error("Contact form error:", response.status, result?.error);
+        setErrorBody(response.status === 429 ? t.errorBusy : t.errorServer);
         setStatus("error");
       }
     } catch (error) {
       console.error("Contact form network error:", error);
+      setErrorBody(t.errorNetwork);
       setStatus("error");
     } finally {
       inFlight.current = false;
@@ -124,7 +127,7 @@ export default function Contact() {
               <div className="rounded-lg border-2 border-line-strong bg-raised p-6 md:p-8">
                 <p className="font-display text-xl font-medium text-ink">{t.errorTitle}</p>
                 <p className="mt-2 text-muted">
-                  {t.errorBody}{" "}
+                  {errorBody}{" "}
                   <a href={`mailto:${EMAIL}`} className="link break-words font-medium text-ink">
                     {EMAIL}
                   </a>

@@ -6,6 +6,8 @@ import { content } from "@/lib/content";
 
 const SRC = "/music/misery.mp3";
 const AUTOPLAY_DELAY_MS = 3000;
+// Background music sits under the page, not over it: well below full volume.
+const VOLUME = 0.3;
 
 export default function MusicPlayer({ className }: { className: string }) {
   const audioRef = useRef<HTMLAudioElement>(null);
@@ -19,6 +21,7 @@ export default function MusicPlayer({ className }: { className: string }) {
   useEffect(() => {
     const audio = audioRef.current;
     if (!audio) return;
+    audio.volume = VOLUME;
     const onPlay = () => setPlaying(true);
     const onPause = () => setPlaying(false);
     audio.addEventListener("play", onPlay);

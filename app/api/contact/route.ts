@@ -57,6 +57,10 @@ export async function POST(request: Request) {
     port,
     secure: port === 465,
     auth: { user: SMTP_USER, pass: SMTP_PASS },
+    // Nodemailer's defaults wait minutes on an unreachable server; fail fast so the visitor gets an answer.
+    connectionTimeout: 10_000,
+    greetingTimeout: 10_000,
+    socketTimeout: 20_000,
   });
 
   const text = `New Portfolio Contact Form Submission
