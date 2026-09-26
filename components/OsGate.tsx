@@ -22,7 +22,7 @@ const OPTIONS = [
 ] as const;
 
 const MESSAGES: Partial<Record<Phase, string>> = {
-  denied: "Sorry, you're not permitted to see this website.",
+  denied: "Sorry, you are not eligible to visit this website.",
   kidding: "Just Kidding XD",
   cool: "Cool..",
 };
