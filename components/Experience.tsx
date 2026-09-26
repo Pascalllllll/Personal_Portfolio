@@ -5,7 +5,8 @@ import { content } from "@/lib/content";
 import { experience, type Role } from "@/lib/experience";
 import SectionHeading from "@/components/SectionHeading";
 
-const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+// Fixed locale and UTC so the server and the browser render the same string.
+const monthFormat = new Intl.DateTimeFormat("en", { month: "short", year: "numeric", timeZone: "UTC" });
 
 const parse = (ym: string) => {
   const [y, m] = ym.split("-").map(Number);
@@ -14,7 +15,7 @@ const parse = (ym: string) => {
 
 const formatMonth = (ym: string) => {
   const { y, m } = parse(ym);
-  return `${MONTHS[m - 1]} ${y}`;
+  return monthFormat.format(Date.UTC(y, m - 1));
 };
 
 const monthsBetween = (start: string, end: string) => {
@@ -39,7 +40,7 @@ function formatDuration(months: number, t: Labels) {
 function Dates({ start, end, now, t }: { start: string; end: string | null; now: string | null; t: Labels }) {
   const until = end ?? now;
   return (
-    <p className="text-sm text-faint">
+    <p className="text-sm tabular-nums text-faint">
       <time dateTime={start}>{formatMonth(start)}</time>
       {end !== start && (
         <>
@@ -121,7 +122,7 @@ export default function Experience() {
                 </span>
 
                 <div data-reveal className="min-w-0 pt-0.5">
-                  <h3 className="font-display text-xl font-medium leading-snug text-ink">{org.name}</h3>
+                  <h3 className="text-balance font-display text-xl font-semibold leading-snug text-ink">{org.name}</h3>
                   {grouped ? (
                     <p className="text-sm text-faint">
                       {org.roles.length} {t.roles}

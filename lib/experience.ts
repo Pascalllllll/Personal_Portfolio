@@ -16,25 +16,21 @@ export const experience: Organization[] = [
   {
     name: "Schematics ITS",
     monogram: "SC",
-    about: "The yearly national tech event run by Informatics ITS.",
+    about: "Informatics ITS's yearly national tech event.",
     roles: [
       {
         title: "Head of Sponsorship",
         start: "2026-04",
         end: null,
-        details: [
-          "I lead a team of 7 that finds and signs corporate sponsors.",
-          "I handle each deal from first contact to signed contract, then make sure we deliver what we promised.",
-        ],
+        details: ["Lead a team of 7 that finds sponsors and handles each deal from first contact to delivery."],
       },
       {
         title: "Sponsorship Staff",
         start: "2025-03",
         end: "2025-12",
         details: [
-          "Reached out to 160+ companies about sponsoring Schematics 2025.",
-          "Wrote proposals and negotiated the deals.",
-          "Kept in touch with 10+ sponsors and delivered the branding each contract promised.",
+          "Pitched Schematics 2025 to 160+ companies and negotiated the deals.",
+          "Delivered the promised branding to 10+ sponsors.",
         ],
       },
     ],
@@ -48,60 +44,45 @@ export const experience: Organization[] = [
         title: "Head of Event",
         start: "2026-03",
         end: null,
-        details: [
-          "I run the team behind HMTC's big yearly events, like TC Grandcup and TC Quadrathlon.",
-          "I handle the team's logistics, budget, and equipment, and guide the staff through it.",
-        ],
+        details: ["Run the team behind TC Grandcup and TC Quadrathlon, including logistics, budget, and equipment."],
       },
       {
         title: "Staff, Farewell Party",
         start: "2025-12",
         end: "2025-12",
-        details: [
-          "Came up with the theme, rundown, and activities for the outgoing cabinet's farewell, for 40+ members.",
-          "Set up the venue and helped keep both main segments on time.",
-        ],
+        details: ["Planned the outgoing cabinet's farewell for 40+ members and helped keep it on schedule."],
       },
       {
         title: "Staff Intern",
         start: "2025-11",
         end: "2025-12",
-        details: [
-          "Looked after the speakers and guests at an event with 100+ attendees.",
-          "Prepared the equipment and helped with setup on the day.",
-        ],
+        details: ["Looked after speakers and guests at an event with 100+ attendees."],
       },
     ],
   },
   {
     name: "GDGoC ITS",
     monogram: "GD",
-    about: "Google Developer Group on Campus, a student developer community at ITS.",
+    about: "Google Developer Group on Campus at ITS.",
     roles: [
       {
         title: "Member",
         start: "2024-11",
         end: null,
-        details: [
-          "Went to 4+ workshops on machine learning, cybersecurity, and software engineering.",
-          "Finished 5+ small projects and learning modules.",
-        ],
+        details: ["Attended 4+ workshops on machine learning, cybersecurity, and software engineering."],
       },
     ],
   },
   {
     name: "TDC ITS",
     monogram: "TD",
-    about: "Technopreneur Development Center, an ITS group for students interested in tech startups.",
+    about: "Technopreneur Development Center, the ITS startup group.",
     roles: [
       {
         title: "Member",
         start: "2024-09",
         end: null,
-        details: [
-          "Went to 3+ sessions on building a business, startup strategy, and testing product ideas.",
-          "Studied real business cases on market analysis and growth.",
-        ],
+        details: ["Attended 3+ sessions on startup strategy and testing product ideas."],
       },
     ],
   },
@@ -115,9 +96,8 @@ export const experience: Organization[] = [
         start: "2022-08",
         end: "2023-08",
         details: [
-          "Handled the money for a group of 100+ members.",
-          "Wrote 12 monthly reports and 1 yearly report for the board.",
-          "Recorded over Rp 12,000,000 in transactions over the school year.",
+          "Handled the money for 100+ members, over Rp 12,000,000 in one school year.",
+          "Wrote 12 monthly reports and a yearly report for the board.",
         ],
       },
     ],

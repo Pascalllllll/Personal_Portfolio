@@ -9,7 +9,7 @@ export default function Hero() {
   return (
     <section id="hero" className="border-b border-line">
       <div className="mx-auto max-w-4xl px-4 pb-16 pt-32 sm:px-6 md:pb-24 md:pt-40">
-        <h1 data-reveal className="font-display text-[clamp(2.5rem,7vw,4.5rem)] font-bold leading-[1.05] tracking-tight text-ink">
+        <h1 data-reveal className="font-display text-[clamp(2.75rem,8vw,5rem)] font-semibold leading-[1.05] tracking-[-0.025em] text-ink">
           <TypingName name={t.name} phrases={t.typing} />
         </h1>
 

@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { AlertCircle, Github, Linkedin, Mail } from "lucide-react";
 import { content } from "@/lib/content";
 import SectionHeading from "@/components/SectionHeading";
@@ -31,6 +31,15 @@ export default function Contact() {
   const [status, setStatus] = useState<"idle" | "sending" | "success" | "error">("idle");
   const [errorBody, setErrorBody] = useState<string>(t.errorServer);
   const inFlight = useRef(false);
+
+  // Ask before leaving if a typed message hasn't been sent yet (the form clears itself on success).
+  const hasDraft = form.message.trim() !== "";
+  useEffect(() => {
+    if (!hasDraft) return;
+    const warn = (e: BeforeUnloadEvent) => e.preventDefault();
+    window.addEventListener("beforeunload", warn);
+    return () => window.removeEventListener("beforeunload", warn);
+  }, [hasDraft]);
 
   const update = (field: Field, value: string) => {
     const next = { ...form, [field]: value };
@@ -120,14 +129,14 @@ export default function Contact() {
           <div data-reveal style={{ "--reveal-delay": "120ms" } as React.CSSProperties} aria-live="polite">
             {status === "success" ? (
               <div className="rounded-lg border border-line bg-raised p-6 md:p-8">
-                <p className="font-display text-xl font-medium text-ink">{t.success}</p>
+                <p className="text-balance font-display text-xl font-semibold text-ink">{t.success}</p>
                 <button type="button" onClick={() => setStatus("idle")} className="btn-outline mt-6">
                   {t.sendAnother}
                 </button>
               </div>
             ) : status === "error" ? (
               <div className="rounded-lg border-2 border-line-strong bg-raised p-6 md:p-8">
-                <p className="font-display text-xl font-medium text-ink">{t.errorTitle}</p>
+                <p className="text-balance font-display text-xl font-semibold text-ink">{t.errorTitle}</p>
                 <p className="mt-2 text-muted">
                   {errorBody}{" "}
                   <a href={`mailto:${EMAIL}`} className="link break-words font-medium text-ink">
@@ -161,6 +170,7 @@ export default function Contact() {
                     maxLength={LIMITS.name}
                     type="text"
                     autoComplete="name"
+                    spellCheck={false}
                     placeholder={t.namePlaceholder}
                     value={form.name}
                     onChange={(e) => update("name", e.target.value)}
@@ -181,6 +191,7 @@ export default function Contact() {
                     maxLength={LIMITS.email}
                     type="email"
                     autoComplete="email"
+                    spellCheck={false}
                     placeholder={t.emailPlaceholder}
                     value={form.email}
                     onChange={(e) => update("email", e.target.value)}

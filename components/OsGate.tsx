@@ -123,9 +123,9 @@ export default function OsGate() {
     >
       {phase === "choose" ? (
         <div key="choose" data-exiting={exiting ? "" : undefined} className="os-gate-stage w-full max-w-3xl text-center">
-          <h1 id="os-gate-title" className="font-display text-[clamp(1.75rem,5vw,3rem)] font-semibold leading-tight tracking-tight text-ink">
+          <h2 id="os-gate-title" className="text-balance font-display text-[clamp(1.75rem,5vw,3rem)] font-semibold leading-[1.1] tracking-[-0.02em] text-ink">
             <Accented text="What is your Operating System?" />
-          </h1>
+          </h2>
           <div className="mt-10 flex flex-col gap-3 sm:flex-row sm:justify-center">
             {OPTIONS.map((o) => (
               <button
@@ -145,7 +145,7 @@ export default function OsGate() {
           id="os-gate-title"
           aria-live="polite"
           data-exiting={exiting ? "" : undefined}
-          className="os-gate-stage max-w-3xl text-center font-display text-[clamp(1.75rem,5vw,3rem)] font-semibold leading-tight tracking-tight text-ink"
+          className="os-gate-stage max-w-3xl text-balance text-center font-display text-[clamp(1.75rem,5vw,3rem)] font-semibold leading-[1.1] tracking-[-0.02em] text-ink"
         >
           {message && <Accented text={message} />}
         </p>

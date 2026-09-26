@@ -38,7 +38,7 @@ export default function Projects() {
                   className="absolute inset-0 rounded-lg"
                 />
                 <div className="flex items-baseline justify-between gap-4">
-                  <h3 className="font-display text-xl font-medium text-ink">
+                  <h3 className="text-balance font-display text-xl font-semibold text-ink">
                     <LinkPreview
                       url={project.link}
                       external
@@ -49,7 +49,7 @@ export default function Projects() {
                       {project.title}
                     </LinkPreview>
                   </h3>
-                  <span className="flex-shrink-0 font-mono text-sm text-faint">{project.year}</span>
+                  <span className="flex-shrink-0 font-mono text-sm tabular-nums text-faint">{project.year}</span>
                 </div>
 
                 <p className="mt-2 text-muted">{project.desc}</p>

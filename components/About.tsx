@@ -46,7 +46,7 @@ export default function About() {
                   <dt className="text-faint">{fact.label}</dt>
                   <dd className="font-medium text-ink">
                     {fact.value}
-                    {"note" in fact && <span className="ml-1.5 text-xs font-normal text-faint opacity-40">{fact.note}</span>}
+                    {"note" in fact && <span className="ml-1.5 text-xs font-normal text-faint">{fact.note}</span>}
                   </dd>
                 </div>
               ))}
@@ -54,7 +54,7 @@ export default function About() {
           </aside>
         </div>
 
-        <h3 data-reveal className="mt-14 font-display text-xl font-medium text-ink">{focus.title}</h3>
+        <h3 data-reveal className="mt-14 font-display text-xl font-semibold text-ink">{focus.title}</h3>
         <ul className="mt-4 border-t border-line">
           {focus.items.map((item) => (
             <li

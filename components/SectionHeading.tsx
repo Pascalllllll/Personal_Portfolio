@@ -17,7 +17,7 @@ export default function SectionHeading({
       <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
         <h2
           id={id}
-          className="font-display text-[1.75rem] font-semibold leading-tight tracking-tight text-ink md:text-[2.25rem]"
+          className="text-balance font-display text-[2rem] font-semibold leading-[1.1] tracking-[-0.02em] text-ink md:text-[2.5rem]"
         >
           {title}
           <span className="stop" aria-hidden="true">.</span>

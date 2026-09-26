@@ -14,22 +14,26 @@ Avoided on purpose: gradient text, glassmorphism beyond the navbar, glow, badge 
 
 ## 2. Typography
 
-| Role | Typeface | Weights | Used for |
-|---|---|---|---|
-| Display | Playfair Display | 500, 600, 700 | Hero name, section headings, organisation and project titles |
-| Body | Plus Jakarta Sans | 400, 500, 600 | All running text, navigation, buttons |
-| Mono | JetBrains Mono | 400 | Tags, years, experience monograms |
+Apple-style type: one sans family, with hierarchy carried by weight and size rather than by mixing typefaces.
 
-Fonts load through `next/font/google` with `display: swap`.
+| Role | Stack | Weights | Used for |
+|---|---|---|---|
+| Display | `-apple-system`, SF Pro Display, then Inter | 600 | Hero name, section headings, organisation and project titles |
+| Body | `-apple-system`, SF Pro Text, then Inter | 400, 500, 600 | All running text, navigation, buttons |
+| Mono | `ui-monospace`, SF Mono, Menlo, then JetBrains Mono | 400 | Tags, years, experience monograms |
+
+Apple devices render the real San Francisco fonts from the system. SF Pro can't be served on the web, so every other device gets Inter (the closest open match), loaded through `next/font/google` with its optical-size axis so large text uses Inter's display cut, like SF Display. JetBrains Mono is only the fallback for SF Mono.
 
 | Level | Style |
 |---|---|
-| Hero name | Display 700, `clamp(2.5rem, 7vw, 4.5rem)`, line height 1.05, tight tracking |
-| Section heading | Display 600, 1.75rem (2.25rem from `md`), followed by an accent full stop |
+| Hero name | Display 600, `clamp(2.75rem, 8vw, 5rem)`, line height 1.05, tracking -0.025em |
+| Section heading | Display 600, 2rem (2.5rem from `md`), line height 1.1, tracking -0.02em, followed by an accent full stop |
 | Section label | Body, 14px, faint color, above the heading |
-| Card and entry titles | Display 500, 20px |
-| Body | 16px, line height 1.6 |
+| Card and entry titles | Display 600, 21px |
+| Body | 17px, line height 1.47, tracking -0.015em |
 | Metadata | 14px faint, or mono 12px inside tags |
+
+The Tailwind scale (`tailwind.config.ts`) follows Apple's sizes: xs 12, sm 14, base 17, lg 19, xl 21, 2xl 24, with tracking tightening as size grows.
 
 ## 3. Color
 
@@ -65,6 +69,7 @@ The accent appears on: button fill and border, link underlines, the heading full
 
 - All text meets WCAG AA (4.5:1) on `--paper`, `--raised` and over the strongest fluid tint.
 - Faint text: 5.50:1 light, 5.73:1 dark on the flat background; 4.74:1 and 4.52:1 over the fluid.
+- Faint text is never dimmed further with opacity (the GPA note once sat at 1.8:1 that way).
 - Input borders meet the 3:1 non-text minimum in both themes.
 
 ## 4. Layout
@@ -139,6 +144,11 @@ One motion system: ease-out curve `cubic-bezier(0.22, 1, 0.36, 1)`, 200ms for ho
 - Visible 2px accent focus ring on every interactive element.
 - Theme and music toggles have descriptive `aria-label`s; the typing heading exposes only the name.
 - Decorative layers (fluid canvas, cursor, click burst, heading full stops) are `aria-hidden` and ignore pointer events.
+- Contact form: name and email skip spellcheck; the browser asks before leaving while a typed message is unsent.
+- Dates and years use tabular numbers; month names come from `Intl.DateTimeFormat` (fixed `en` locale, UTC).
+- Headings use `text-wrap: balance`; controls use `touch-action: manipulation`; `theme-color` matches the page background per theme.
+- **Increase contrast** (`prefers-contrast: more`): muted, faint, tag text, dividers and borders step up in both themes (faint 8.10:1 light, 10.54:1 dark; input borders 7.81:1 and 6.58:1), and the dark accent border uses full gold.
+- **Reduce transparency** (`prefers-reduced-transparency`): the scrolled navbar turns solid paper instead of blurred.
 - **Reduced motion:** reveals are skipped (content is visible immediately), the fluid shows one still frame with no interaction, the click burst is off, the cursor stays but does not rotate, the theme switches instantly, and all CSS transitions are cut to near zero.
 
 ## 9. Content rules
@@ -158,5 +168,11 @@ One motion system: ease-out curve `cubic-bezier(0.22, 1, 0.36, 1)`, 200ms for ho
 | Color tokens and shared classes | `app/globals.css` |
 | Fonts and page shell | `app/layout.tsx` |
 | Project screenshots | `public/project/` (WebP, 720px wide) |
+| Site URL | `lib/site.ts` |
+| Page metadata, Open Graph, Twitter card | `app/layout.tsx` |
+| Link-preview image (1200 x 630, generated) | `app/opengraph-image.tsx` |
+| Structured data (ProfilePage + Person) | `app/page.tsx` |
+| robots.txt and sitemap | `app/robots.ts`, `app/sitemap.ts` |
+| Security headers and Content-Security-Policy (production only; allows only this origin plus `api.web3forms.com`) | `next.config.mjs` |
 
 Stack: Next.js 16 (App Router), React 18, TypeScript, Tailwind CSS 3, framer-motion, Radix Hover Card, next-themes, lucide-react.

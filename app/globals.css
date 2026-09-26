@@ -52,6 +52,25 @@
   color-scheme: dark;
 }
 
+/* Increase Contrast (system setting): stronger secondary text, dividers and borders in both themes. */
+@media (prefers-contrast: more) {
+  :root {
+    --line: #a3a3a3;
+    --line-strong: #525252;
+    --muted: #404040;
+    --faint: #4d4d4d;
+    --tag-ink: #262626;
+  }
+  .dark {
+    --line: #595959;
+    --line-strong: #999999;
+    --muted: #d4d4d4;
+    --faint: #bdbdbd;
+    --tag-ink: #ededed;
+    --accent-border: var(--gold);
+  }
+}
+
 html {
   @apply bg-paper transition-colors duration-200 ease-out;
   scroll-behavior: smooth;
@@ -81,12 +100,20 @@ html {
 }
 
 body {
-  @apply font-sans text-base leading-[1.6] text-ink;
+  @apply font-sans text-base text-ink;
 }
 
 ::selection {
   background: var(--selection);
   color: var(--ink);
+}
+
+/* No double-tap zoom delay on controls; tap flash in the accent instead of the browser's grey. */
+:is(a, button, input, textarea, select, label, summary) {
+  touch-action: manipulation;
+}
+html {
+  -webkit-tap-highlight-color: color-mix(in srgb, var(--accent) 20%, transparent);
 }
 
 :focus-visible {
@@ -230,6 +257,13 @@ html.custom-cursor :disabled {
   background: color-mix(in srgb, var(--paper) 88%, transparent);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
+}
+@media (prefers-reduced-transparency: reduce) {
+  .nav-glass {
+    background: var(--paper);
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
 }
 
 /* OS gate: the portfolio stays rendered underneath, hidden (and out of the tab order) until the gate hands off. */

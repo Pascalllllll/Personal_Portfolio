@@ -1,19 +1,15 @@
-import type { Metadata } from "next";
-import { Playfair_Display, Plus_Jakarta_Sans, JetBrains_Mono } from "next/font/google";
+import type { Metadata, Viewport } from "next";
+import { Inter, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import Providers from "@/components/Providers";
+import { SITE_URL } from "@/lib/site";
 
-const playfair = Playfair_Display({
+// SF Pro can't be served on the web, so Apple devices get the real system font and everyone else
+// gets Inter (the closest open match), with its optical-size axis standing in for SF Text/Display.
+const inter = Inter({
   subsets: ["latin"],
-  variable: "--font-playfair",
-  weight: ["500", "600", "700"],
-  display: "swap",
-});
-
-const jakarta = Plus_Jakarta_Sans({
-  subsets: ["latin"],
-  variable: "--font-jakarta",
-  weight: ["400", "500", "600"],
+  variable: "--font-inter",
+  axes: ["opsz"],
   display: "swap",
 });
 
@@ -24,11 +20,39 @@ const jetbrainsMono = JetBrains_Mono({
   display: "swap",
 });
 
+const DESCRIPTION =
+  "Portfolio of Hosea Felix Sanjaya, Informatics Engineering student at ITS Surabaya working on data analysis, databases, and a heavily themed Debian desktop.";
+
 export const metadata: Metadata = {
-  title: "Hosea Felix Sanjaya | Portfolio",
-  description:
-    "Portfolio of Hosea Felix Sanjaya, Informatics Engineering student at ITS Surabaya working on data analysis, databases, and a heavily themed Debian desktop.",
-  keywords: ["data analysis", "ITS", "data", "Debian", "Linux ricing", "portfolio"],
+  metadataBase: new URL(SITE_URL),
+  title: "Hosea Felix Sanjaya | Informatics Student at ITS Surabaya",
+  description: DESCRIPTION,
+  keywords: ["Hosea Felix Sanjaya", "data analysis", "databases", "ITS Surabaya", "Informatics", "Debian", "Linux ricing", "portfolio"],
+  authors: [{ name: "Hosea Felix Sanjaya", url: SITE_URL }],
+  alternates: { canonical: "/" },
+  openGraph: {
+    type: "profile",
+    url: "/",
+    siteName: "Hosea Felix Sanjaya",
+    title: "Hosea Felix Sanjaya",
+    description: DESCRIPTION,
+    locale: "en_US",
+    firstName: "Hosea Felix",
+    lastName: "Sanjaya",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Hosea Felix Sanjaya",
+    description: DESCRIPTION,
+  },
+};
+
+// Browser chrome (mobile address bar) matches the page background in each theme.
+export const viewport: Viewport = {
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#fafafa" },
+    { media: "(prefers-color-scheme: dark)", color: "#0a0a0a" },
+  ],
 };
 
 export default function RootLayout({
@@ -40,7 +64,7 @@ export default function RootLayout({
     <html
       lang="en"
       suppressHydrationWarning
-      className={`${playfair.variable} ${jakarta.variable} ${jetbrainsMono.variable}`}
+      className={`${inter.variable} ${jetbrainsMono.variable}`}
     >
       <head>
         <script
