@@ -9,9 +9,7 @@ const HOLD_MS = 2000;
 
 type Phase = "idle" | "showing" | "leaving";
 
-// "View more" under the projects: the portfolio fades out, a full-screen message holds for 2s, then the
-// portfolio fades back in. Nothing navigates or scrolls, so the visitor lands exactly where they were
-// (and the music keeps playing). Escape returns early.
+// Nothing navigates or scrolls, so the visitor lands where they were and the music keeps playing.
 export default function ViewMore({ label, message }: { label: string; message: string }) {
   const [phase, setPhase] = useState<Phase>("idle");
   const button = useRef<HTMLButtonElement>(null);

@@ -1,6 +1,5 @@
 // Production only: the dev server needs eval and a websocket for hot reload.
-// 'unsafe-inline' scripts are required because the page is statically generated (no per-request nonce);
-// everything else is locked to this origin, plus Web3Forms for the contact form.
+// 'unsafe-inline' scripts: the page is statically generated, so there is no per-request nonce.
 const csp = [
   "default-src 'self'",
   "script-src 'self' 'unsafe-inline'",

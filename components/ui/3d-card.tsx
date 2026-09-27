@@ -4,14 +4,10 @@ import * as React from "react";
 import { motion, useMotionValue, useReducedMotion, useSpring, useTransform } from "framer-motion";
 import { cn } from "@/lib/utils";
 
-const TILT = 6; // degrees at the card edge; the original travel card used 10.5, too strong for text
+const TILT = 6; // degrees at the card edge
 const springConfig = { damping: 15, stiffness: 150 };
 
-/**
- * Card that tilts toward the pointer in 3D (adapted from the InteractiveTravelCard tilt).
- * Mouse only: touch and reduced motion keep it flat. Children can sit on their own depth
- * with <Card3DLayer depth={px}>. The parent needs a `perspective`, which Card3D sets on its wrapper.
- */
+/** Tilts toward the pointer in 3D. Mouse only: touch and reduced motion keep it flat. */
 export function Card3D({ children, className }: { children: React.ReactNode; className?: string }) {
   const reduced = useReducedMotion();
   const mouseX = useMotionValue(0);

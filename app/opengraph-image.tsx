@@ -4,7 +4,6 @@ export const alt = "Hosea Felix Sanjaya, Informatics Engineering student at ITS 
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
-// Link-preview card in the site's dark theme: name with the gold accent full stop, role below.
 export default function OpengraphImage() {
   return new ImageResponse(
     (

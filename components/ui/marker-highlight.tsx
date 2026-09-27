@@ -12,9 +12,7 @@ interface MarkerHighlightProps {
   delay?: number;
 }
 
-// Full-height marker in the theme accent (purple light, gold dark) that springs across the phrase
-// when it scrolls into view; the text turns dark as the marker passes under it. Same spring as the
-// Remotion original (damping 14), rebuilt on framer-motion so it works inline in running text.
+// Accent marker that springs across the phrase when it scrolls into view; the text turns dark under it.
 export function MarkerHighlight({ children, className, delay = 0.2 }: MarkerHighlightProps) {
   const ref = useRef<HTMLSpanElement>(null);
   const inView = useInView(ref, { once: true, amount: 0.8 });
