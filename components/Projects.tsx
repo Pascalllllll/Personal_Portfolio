@@ -99,7 +99,12 @@ export default function Projects() {
           ))}
         </ul>
 
-        <ViewMore label={t.viewMore} message={t.moreMessage} onExpand={expanded ? undefined : () => setExpanded(true)} />
+        <ViewMore
+          label={t.viewMore}
+          message={t.moreMessage}
+          onExpand={expanded ? undefined : () => setExpanded(true)}
+          collapse={expanded ? { label: t.showLess, onClick: () => setExpanded(false) } : undefined}
+        />
       </div>
     </section>
   );

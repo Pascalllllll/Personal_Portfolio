@@ -74,6 +74,7 @@ export const content = {
     code: "Source on GitHub",
     newTab: "opens in a new tab",
     viewMore: "View more",
+    showLess: "Show less",
     moreMessage: "Trust me, I have more…",
     items: [
       {
