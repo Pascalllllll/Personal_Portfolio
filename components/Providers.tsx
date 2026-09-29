@@ -4,6 +4,7 @@ import { ThemeProvider } from "next-themes";
 import ClickBurst from "@/components/ClickBurst";
 import DirectionalCursor from "@/components/DirectionalCursor";
 import FluidBackground from "@/components/FluidBackground";
+import HashlessAnchors from "@/components/HashlessAnchors";
 import OsGate from "@/components/OsGate";
 import { ReactNode } from "react";
 
@@ -15,6 +16,7 @@ export default function Providers({ children }: { children: ReactNode }) {
       <OsGate />
       <ClickBurst />
       <DirectionalCursor />
+      <HashlessAnchors />
     </ThemeProvider>
   );
 }
