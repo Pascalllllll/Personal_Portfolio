@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, type MouseEvent } from "react";
+import { useState, useEffect } from "react";
 import { flushSync } from "react-dom";
 import { useTheme } from "next-themes";
 import { Home, Moon, Sun, Menu, X } from "lucide-react";
@@ -41,33 +41,19 @@ export default function Navbar() {
 
   const isDark = mounted && resolvedTheme === "dark";
 
-  const switchTheme = (e: MouseEvent<HTMLButtonElement>) => {
+  const switchTheme = () => {
     const next = isDark ? "light" : "dark";
     if (!document.startViewTransition || window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
       setTheme(next);
       return;
     }
 
-    const rect = e.currentTarget.getBoundingClientRect();
-    const x = rect.left + rect.width / 2;
-    const y = rect.top + rect.height / 2;
-    const radius = Math.hypot(Math.max(x, window.innerWidth - x), Math.max(y, window.innerHeight - y));
-
-    const transition = document.startViewTransition(() => {
+    // The crossfade itself lives in globals.css (::view-transition-new(root)).
+    document.startViewTransition(() => {
       flushSync(() => setTheme(next));
       document.documentElement.classList.toggle("dark", next === "dark");
       document.documentElement.style.colorScheme = next;
     });
-
-    // The browser skips the animation when the tab is hidden; the theme has already changed by then.
-    transition.ready
-      .then(() => {
-        document.documentElement.animate(
-          { clipPath: [`circle(0px at ${x}px ${y}px)`, `circle(${radius}px at ${x}px ${y}px)`] },
-          { duration: 650, easing: "cubic-bezier(0.22, 1, 0.36, 1)", pseudoElement: "::view-transition-new(root)" },
-        );
-      })
-      .catch(() => {});
   };
 
   return (

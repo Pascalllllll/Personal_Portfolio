@@ -194,10 +194,30 @@ html {
   transform: translateY(28px);
 }
 
+/* Theme switch: the old theme stays put while the new one fades and un-blurs over it.
+   No clip-path geometry, so mobile toolbars resizing the viewport can't leave gaps. */
 ::view-transition-old(root),
 ::view-transition-new(root) {
-  animation: none;
   mix-blend-mode: normal;
+}
+
+::view-transition-old(root) {
+  animation: none;
+}
+
+::view-transition-new(root) {
+  animation: theme-morph 520ms cubic-bezier(0.4, 0, 0.2, 1) both;
+}
+
+@keyframes theme-morph {
+  from {
+    opacity: 0;
+    filter: blur(6px);
+  }
+  to {
+    opacity: 1;
+    filter: blur(0);
+  }
 }
 
 .click-burst-bar {
