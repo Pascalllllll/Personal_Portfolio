@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import Image from "next/image";
 import { ArrowUpRight, Github } from "lucide-react";
 import { content } from "@/lib/content";
@@ -10,6 +11,7 @@ import ViewMore from "@/components/ViewMore";
 export default function Projects() {
   const t = content.projects;
   const linkLabel = (kind: string) => (kind === "live" ? t.live : t.code);
+  const [expanded, setExpanded] = useState(false);
 
   return (
     <section id="projects" aria-labelledby="projects-title" className="section border-b border-line">
@@ -28,8 +30,9 @@ export default function Projects() {
         </SectionHeading>
 
         <ul className="grid gap-5 md:grid-cols-2">
-          {t.items.map((project) => (
-            <li key={project.title} data-reveal>
+          {/* Extra cards stay mounted but hidden so ScrollReveal observes them and animates them in once shown. */}
+          {t.items.map((project, i) => (
+            <li key={project.title} data-reveal hidden={!expanded && i >= t.initialCount}>
               <Card3D className="group relative flex flex-col rounded-lg border border-line bg-raised transition-[border-color,box-shadow] duration-200 ease-out hover:border-line-strong hover:shadow-[0_12px_32px_rgb(0_0_0/0.12)]">
                 {/* Whole-card click target; the title link below is the one keyboard stop. */}
                 <a
@@ -96,7 +99,7 @@ export default function Projects() {
           ))}
         </ul>
 
-        <ViewMore label={t.viewMore} message={t.moreMessage} />
+        <ViewMore label={t.viewMore} message={t.moreMessage} onExpand={expanded ? undefined : () => setExpanded(true)} />
       </div>
     </section>
   );

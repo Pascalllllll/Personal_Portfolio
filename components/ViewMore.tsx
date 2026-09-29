@@ -10,7 +10,8 @@ const HOLD_MS = 2000;
 type Phase = "idle" | "showing" | "leaving";
 
 // Nothing navigates or scrolls, so the visitor lands where they were and the music keeps playing.
-export default function ViewMore({ label, message }: { label: string; message: string }) {
+// While onExpand is set, the button reveals more items instead of the message.
+export default function ViewMore({ label, message, onExpand }: { label: string; message: string; onExpand?: () => void }) {
   const [phase, setPhase] = useState<Phase>("idle");
   const button = useRef<HTMLButtonElement>(null);
   const fade = useRef(FADE_MS);
@@ -52,7 +53,10 @@ export default function ViewMore({ label, message }: { label: string; message: s
         <button
           ref={button}
           type="button"
-          onClick={() => phase === "idle" && setPhase("showing")}
+          onClick={() => {
+            if (onExpand) onExpand();
+            else if (phase === "idle") setPhase("showing");
+          }}
           className="btn-outline"
         >
           {label}
