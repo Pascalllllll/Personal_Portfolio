@@ -83,9 +83,9 @@ export const content = {
         year: "2026",
         desc: "A parkour game where every stone is a live Ethereum transaction. Reach the newest block before the rising floor catches you.",
         tech: ["JavaScript", "Three.js", "viem", "Ethereum"],
-        link: "https://github.com/Pascalllllll/Unfinalized",
+        link: "https://unfinalized.vercel.app/",
         preview: "/project/unfinalized.webp",
-        kind: "code",
+        kind: "live",
         featured: false,
       },
       {
@@ -116,9 +116,9 @@ export const content = {
         year: "2026",
         desc: "Paste text that sounds like a chatbot wrote it. You get it back with the AI tells crossed out.",
         tech: ["JavaScript", "Web Workers", "HTML", "CSS"],
-        link: "https://github.com/Pascalllllll/Antislop-paraphrase",
+        link: "https://antislop-paraphrase.vercel.app/",
         preview: "/project/antislop-paraphrase.webp",
-        kind: "code",
+        kind: "live",
         featured: false,
       },
       {
