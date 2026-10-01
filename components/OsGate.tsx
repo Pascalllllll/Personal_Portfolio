@@ -7,11 +7,11 @@ export const GATE_KEY = "os-gate-done";
 // Fired on window when the gate hands off and the portfolio starts fading in.
 export const GATE_DONE_EVENT = "os-gate-done";
 
-const FADE_MS = 400;
-const LEAVE_MS = 600;
-const DENIED_MS = 3000;
-const COOL_MS = 2000;
-const KIDDING_MS = 1500;
+const FADE_MS = 300;
+const LEAVE_MS = 450;
+const DENIED_MS = 2300;
+const COOL_MS = 1400;
+const KIDDING_MS = 1100;
 
 type Phase = "choose" | "denied" | "kidding" | "cool" | "leave" | "done";
 
